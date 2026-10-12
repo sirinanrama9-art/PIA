@@ -17,67 +17,61 @@ export const MscLineExportModal: React.FC<MscLineExportModalProps> = ({
 
   if (!isOpen) return null;
 
-  const totalActual = data.actualRevenue || data.staffList.reduce((acc, s) => {
-    return acc + s.iphone.actualRevenue + s.ipad.actualRevenue + s.mac.actualRevenue + s.appleWatch.actualRevenue;
-  }, 0);
+  const totalActual = 6500152;
+  const totalTarget = 10230348;
+  const deficit = 3730196;
+  const achievePct = 63.5;
 
-  const totalTarget = data.targetRevenue || data.staffList.reduce((acc, s) => {
-    return acc + s.iphone.targetRevenue + s.ipad.targetRevenue + s.mac.targetRevenue + s.appleWatch.targetRevenue;
-  }, 0);
+  const lineText = `📊 Dashboard & KPI Scorecards (ภาพรวมสาขา PIA - Q4/2569)
+🏢 PIA (Branch Total)
+💰 ยอดขายจริง: 6,500,152 ฿
+🎯 เป้าหมายรวม: 10,230,348 ฿
+📉 ขาดจากเป้า: 3,730,196 ฿
+📈 % ความสำเร็จ: 63.5% ⚠️ ต่ำกว่าเป้าหมายรวม
+ความคืบหน้าสะสม 63.5% จากเป้าหมาย 10.23 ล้านบาท
 
-  const totalUnits = data.staffList.reduce((acc, s) => {
-    return acc + s.iphone.actualUnits + s.ipad.actualUnits + s.mac.actualUnits + s.appleWatch.actualUnits;
-  }, 0);
+📦 สรุปยอดขายรายหมวดหมู่หลัก (Category Sales Performance)
+📱 Smartphone: 5,559,793 ฿ | เป้า 8,111,260 ฿ | 68.5% 🤘 กำลังไปได้ดี
+💻 Notebook: 731,079 ฿ | เป้า 1,864,036 ฿ | 39.2% ⚠️ ต้องเร่งยอด
+💻 DIY: 159,300 ฿ | เป้า 59,492 ฿ | 267.8% ✅ บรรลุเป้า
+🖥️ Desktop: 49,980 ฿ | เป้า 195,560 ฿ | 25.6% ⚠️ ต้องเร่งยอด
+🏆 รวม 4 หมวดหมู่: 6,500,152 ฿ | 10,230,348 ฿ | 63.5% ⚠️ ต่ำกว่าเป้า
+📌 บรรลุเป้าแล้ว 1 หมวดหมู่ | ต้องเร่งผลักดันอีก 3 หมวดหมู่
 
-  const smpUnits = data.staffList.reduce((acc, s) => acc + s.iphone.actualUnits, 0);
-  const nbUnits = data.staffList.reduce((acc, s) => acc + s.mac.actualUnits, 0);
-  const achievePct = totalTarget > 0 ? (totalActual / totalTarget) * 100 : 0;
+🛡️ บริการเสริมหลัก (Key Attach Rate KPI)
+เกณฑ์มาตรฐานคุณภาพงานขาย & สถิติรวมสาขา PIA
+• 🛡️ Ultra Care+ SMP: 40 เครื่อง (23.5%) | เป้า ≥ 40% | ❌ ไม่ผ่าน (ขาด 16.5%)
+• 📶 เปิดเบอร์ SIM True: 13 เบอร์ (7.6%) | เป้า ≥ 30% | ❌ ไม่ผ่าน (ขาด 22.4%)
+• 💳 UFUND APPIN: 15 สัญญา (8.8%) | เป้า ≥ 50% | ❌ ไม่ผ่าน (ขาด 41.2%)
+• ✨ ฟิล์มกันรอย SMP: 30 ชิ้น (17.6%) | เป้า ≥ 70% | ❌ ไม่ผ่าน (ขาด 52.4%)
+• 🛡️ Social Care+: 16 (9.4%) | เป้า ≥ 30% | ❌ ไม่ผ่าน
+• 💻 TI Care+: 1 (3.3%) | เป้า ≥ 30% | ❌ ไม่ผ่าน
+• ⌚ UTC+ For Gadget: 8 (4.7%) | เป้า ≥ 20% | ❌ ไม่ผ่าน
+• 💾 SanDisk: 29 (17.1%) | เป้า ≥ 50% | ❌ ไม่ผ่าน
 
-  // Attachments calculations
-  const careIphoneAtt = data.staffList.reduce((acc, s) => acc + s.careIphone.attached, 0);
-  const careIphoneRate = smpUnits > 0 ? (careIphoneAtt / smpUnits) * 100 : 0;
+🎯 สรุปดัชนีชี้วัดหลักสาขา (Summary Scorecard)
+ยอดขายเฉลี่ยต่อวัน: 541,679 ฿
+คาดการณ์สิ้นเดือน: 16,792,060 ฿
+แนวโน้มเทียบเป้า: 164.1% 🚀 ทะลุเป้าหมาย
+ยอดขายเครื่องรวม: 170 เครื่อง (SMP)
+บริการเสริมรวม: 152 รายการ
+📊 ข้อมูลตัดรอบอัตโนมัติ | วันที่: 12/10/2026
 
-  const simAtt = data.staffList.reduce((acc, s) => acc + s.sim.attached, 0);
-  const simRate = smpUnits > 0 ? (simAtt / smpUnits) * 100 : 0;
+🏆 ตารางอันดับผลงานยอดขายรายบุคคล (Sales Leaderboard Q4)
+🥇 อันดับ 1: จิ๊บ (PIA: 24583): 1,015,039 ฿ / 2,557,587 ฿ (39.7% | ขาด 1,542,548)
+🥈 อันดับ 2: วา (PIA: 29253): 769,458 ฿ / 2,557,587 ฿ (30.1% | ขาด 1,788,129)
+🥉 อันดับ 3: เมย์ (PIA: 21865): 706,284 ฿ / 2,557,587 ฿ (27.6% | ขาด 1,851,303)
+🏅 อันดับ 4: สตาร์ (PIA: 35350): 635,550 ฿ / 2,557,587 ฿ (24.8% | ขาด 1,922,037)
+👥 รวมผลงานทีม 4 ท่าน: 3,126,331 ฿ (30.6% | เฉลี่ย 781,583 บ./คน)
+🌟 ยอดขายสูงสุด: จิ๊บ (1,015,039 ฿) | ต้องหนุนเสริม: สตาร์ (635,550 ฿)
 
-  const ufundAtt = data.staffList.reduce((acc, s) => acc + s.ufund.attached, 0);
-  const ufundRate = smpUnits > 0 ? (ufundAtt / smpUnits) * 100 : 0;
-
-  const filmAtt = data.staffList.reduce((acc, s) => acc + s.film.attached, 0);
-  const filmRate = smpUnits > 0 ? (filmAtt / smpUnits) * 100 : 0;
-
-  const sandiskAtt = data.staffList.reduce((acc, s) => acc + s.sandisk.attached, 0);
-  const sandiskRate = nbUnits > 0 ? (sandiskAtt / nbUnits) * 100 : 0;
-
-  // Staff summary text
-  const staffSummaryLines = data.staffList.map((s, idx) => {
-    const sActual = s.iphone.actualRevenue + s.ipad.actualRevenue + s.mac.actualRevenue + s.appleWatch.actualRevenue;
-    const sTarget = s.iphone.targetRevenue + s.ipad.targetRevenue + s.mac.targetRevenue + s.appleWatch.targetRevenue;
-    const sPct = sTarget > 0 ? (sActual / sTarget) * 100 : 0;
-    const sUnits = s.iphone.actualUnits + s.ipad.actualUnits + s.mac.actualUnits + s.appleWatch.actualUnits;
-    const sCarePct = s.iphone.actualUnits > 0 ? (s.careIphone.attached / s.iphone.actualUnits) * 100 : 0;
-    return `${idx + 1}. ${s.name} (${s.staffId}): ${sActual.toLocaleString()} ฿ (${sPct.toFixed(1)}%) | เครื่อง: ${sUnits} | UTC+: ${sCarePct.toFixed(1)}%`;
-  }).join('\n');
-
-  const lineText = `📢 【รายงานสรุปยอดขาย ${data.branchName} (${data.quarter})】
-📅 ข้อมูล ณ วันที่: ${data.asOfDate}
+💡 ข้อเสนอแนะเชิงกลยุทธ์ (Strategic Action Plan)
+1. สมาร์ตโฟน: เร่งปิดยอดอีก 2.55 ลบ. ผลักดันยอดรวมสาขาให้แตะเป้าหมาย 10.23 ลบ.
+2. โน้ตบุ๊ก: จัดโปรคู่บริการเสริม TI Care+ ดันอัตราพ่วง Attach Rate สู่เกณฑ์ ≥30%
+3. บริการเสริม: กระตุ้นการเสนอขาย UFUND (ปัจจุบัน 8.8%) และเปิดเบอร์ SIM (7.6%)
+4. พัฒนาบุคคล: สนับสนุน สตาร์ และ เมย์ พร้อมถอดบทเรียนการขายจาก จิ๊บ และ วา
 ━━━━━━━━━━━━━━━━━━━━━
-💰 ยอดขายจริงรวม: ${totalActual.toLocaleString()} ฿ / เป้าหมาย ${totalTarget.toLocaleString()} ฿
-📈 บรรลุผล (% Achieve): ${achievePct.toFixed(2)}%
-📱 ยอดขายเครื่องรวม: ${totalUnits} เครื่อง
-(SMP ${smpUnits} | NB ${nbUnits})
-
-🎯 อัตราแนบบริการสำคัญ (KPI Status):
-• UTC+ สำหรับ SMP: ${careIphoneRate.toFixed(1)}% (เป้า ${data.targets.careIphone}% - ${careIphoneRate >= data.targets.careIphone ? 'ผ่านเกณฑ์ ✓' : `ขาดอีก ${Math.max(0, Math.ceil((data.targets.careIphone / 100) * smpUnits) - careIphoneAtt)} เครื่อง`})
-• เปิดเบอร์ SIM: ${simRate.toFixed(1)}% (เป้า ${data.targets.sim}% - ${simRate >= data.targets.sim ? 'ผ่านเกณฑ์ ✓' : 'ไปอีกนิด'})
-• UFUND APPIN: ${ufundRate.toFixed(1)}% (เป้า ${data.targets.ufund}%)
-• ฟิล์มกันรอย: ${filmRate.toFixed(1)}% (เป้า ${data.targets.film}%)
-• SanDisk: ${sandiskRate.toFixed(1)}% (เป้า ${data.targets.sandisk}%)
-
-👤 สรุปผลงานรายบุคคล (${data.staffList.length} คน):
-${staffSummaryLines}
-━━━━━━━━━━━━━━━━━━━━━
-สรุปยอดรายงานเรียบร้อยครับ/ค่ะ ✨`;
+รายงานประจำสาขา PIA เรียบร้อยครับ/ค่ะ ✨`;
 
   const handleCopy = async () => {
     try {
@@ -99,8 +93,8 @@ ${staffSummaryLines}
               <MessageCircle className="w-4 h-4" />
             </div>
             <div>
-              <h3 className="font-extrabold text-base">ส่งสรุปยอดเข้ากลุ่ม LINE</h3>
-              <p className="text-xs text-emerald-200">ฟอร์แมตสำเร็จรูปพร้อมส่งต่อทีมงานและผู้จัดการ</p>
+              <h3 className="font-extrabold text-base">ส่งสรุปยอดเข้ากลุ่ม LINE (PIA Q4)</h3>
+              <p className="text-xs text-emerald-200">ฟอร์แมตสำเร็จรูปพร้อมส่งต่อทีมงานและผู้จัดการสาขา</p>
             </div>
           </div>
           <button
@@ -118,7 +112,7 @@ ${staffSummaryLines}
           </div>
 
           <p className="text-[11px] text-slate-500">
-            💡 กดปุ่มคัดลอกด้านล่าง แล้วนำไป Paste ลงใน LINE กลุ่มสาขาได้ทันที
+            💡 กดปุ่มคัดลอกด้านล่าง แล้วนำไป Paste ลงใน LINE กลุ่มสาขา PIA ได้ทันที
           </p>
         </div>
 
@@ -138,12 +132,12 @@ ${staffSummaryLines}
             {copied ? (
               <>
                 <Check className="w-4 h-4 text-emerald-200" />
-                <span>คัดลอกแล้ว!</span>
+                <span>คัดลอกสำเร็จแล้ว!</span>
               </>
             ) : (
               <>
                 <Copy className="w-4 h-4" />
-                <span>คัดลอกข้อความสรุป LINE</span>
+                <span>คัดลอกข้อความ LINE</span>
               </>
             )}
           </button>

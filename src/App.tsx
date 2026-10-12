@@ -10,7 +10,6 @@ import { MscDailyTab } from './components/MscDailyTab';
 import { MscLineExportModal } from './components/MscLineExportModal';
 import { MscDataManagerModal } from './components/MscDataManagerModal';
 import { GoogleSheetSyncModal } from './components/GoogleSheetSyncModal';
-import { GoogleSheetQuickBar } from './components/GoogleSheetQuickBar';
 import { MasterDataTable } from './components/MasterDataTable';
 import { DayInspector } from './components/DayInspector';
 import { buildInitialData } from './data/initialData';
@@ -22,7 +21,7 @@ export default function App() {
   // Load saved branch data or fallback to INITIAL_PIA_DATA
   const [data, setData] = useState<BranchDataState>(() => {
     try {
-      const saved = localStorage.getItem('pia_branch_data_v2');
+      const saved = localStorage.getItem('pia_branch_data_v4_q4_2569');
       if (saved) {
         return JSON.parse(saved);
       }
@@ -50,7 +49,7 @@ export default function App() {
     return buildInitialData();
   });
 
-  const [selectedDay, setSelectedDay] = useState<number | null>(11);
+  const [selectedDay, setSelectedDay] = useState<number | null>(12);
   const [editingStaffDay, setEditingStaffDay] = useState<{ staffId: string; day: number } | null>(null);
 
   const showToast = (msg: string) => {
@@ -61,7 +60,7 @@ export default function App() {
   const handleSaveData = (newData: BranchDataState) => {
     setData(newData);
     try {
-      localStorage.setItem('pia_branch_data_v2', JSON.stringify(newData));
+      localStorage.setItem('pia_branch_data_v4_q4_2569', JSON.stringify(newData));
     } catch (e) {
       console.error(e);
     }
@@ -72,6 +71,7 @@ export default function App() {
     setData(INITIAL_PIA_DATA);
     setRecords(buildInitialData());
     try {
+      localStorage.removeItem('pia_branch_data_v4_q4_2569');
       localStorage.removeItem('pia_branch_data_v2');
       localStorage.removeItem('pia_master_records_v1');
     } catch (e) {
@@ -79,16 +79,6 @@ export default function App() {
     }
     showToast('รีเซ็ตกลับเป็นข้อมูลเริ่มต้นของสาขา PIA เรียบร้อย');
   };
-
-  const handleOpenGoogleSheet = () => {
-    setIsGoogleSheetModalOpen(true);
-  };
-
-  const handleUpdateFromGoogleSheet = (newData: BranchDataState) => {
-    handleSaveData(newData);
-    showToast('🎉 อัปเดตข้อมูลจาก Google Sheet สำเร็จแล้ว!');
-  };
-
   // Convert current staff list for MasterDataTable
   const staffListForMaster: StaffInfo[] = data.staffList.map((s) => ({
     id: s.staffId,
@@ -141,18 +131,11 @@ export default function App() {
         setIsDarkMode={setIsDarkMode}
         onOpenLineModal={() => setIsLineModalOpen(true)}
         onOpenDataManager={() => setIsDataManagerOpen(true)}
-        onOpenGoogleSheet={handleOpenGoogleSheet}
+        onOpenGoogleSheet={() => setIsGoogleSheetModalOpen(true)}
       />
 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
-        {/* Google Sheet Quick Sync Bar (ช่องวางลิงก์เพื่อดึงข้อมูล) */}
-        <GoogleSheetQuickBar
-          data={data}
-          onUpdateData={handleUpdateFromGoogleSheet}
-          onOpenDetailedModal={handleOpenGoogleSheet}
-        />
-
         {/* Yellow Notice Banner */}
         <FocusNoticeBanner 
           data={data}
@@ -328,7 +311,10 @@ export default function App() {
         isOpen={isGoogleSheetModalOpen}
         onClose={() => setIsGoogleSheetModalOpen(false)}
         data={data}
-        onUpdateData={handleUpdateFromGoogleSheet}
+        onUpdateData={(newData) => {
+          handleSaveData(newData);
+          showToast('ซิงค์และอัปเดตข้อมูลจาก Google Sheet สำเร็จ!');
+        }}
       />
     </div>
   );

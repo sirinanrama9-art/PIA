@@ -2,15 +2,14 @@ import React from 'react';
 import { 
   Moon, 
   Sun, 
-  FileSpreadsheet, 
-  Send, 
   Smartphone, 
   Users, 
   Calculator, 
   TrendingUp,
   Table,
   SlidersHorizontal,
-  MessageCircle
+  MessageCircle,
+  FileSpreadsheet
 } from 'lucide-react';
 import { BranchDataState } from '../types/mscTypes';
 
@@ -21,7 +20,7 @@ interface MscNavbarProps {
   isDarkMode: boolean;
   setIsDarkMode: (val: boolean) => void;
   onOpenLineModal: () => void;
-  onOpenDataManager: () => void;
+  onOpenDataManager?: () => void;
   onOpenGoogleSheet?: () => void;
 }
 
@@ -65,14 +64,18 @@ export const MscNavbar: React.FC<MscNavbarProps> = ({
 
           {/* Right action buttons */}
           <div className="flex items-center gap-2 self-end sm:self-auto flex-wrap">
-            {/* Manage Data button */}
-            <button
-              onClick={onOpenDataManager}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-indigo-700 bg-indigo-50 hover:bg-indigo-100 rounded-xl transition-colors cursor-pointer border border-indigo-200 shadow-2xs"
-            >
-              <SlidersHorizontal className="w-3.5 h-3.5 text-indigo-600" />
-              <span>จัดการข้อมูล / นำเข้าไฟล์</span>
-            </button>
+            {/* Google Sheet Sync - Small compact icon button */}
+            {onOpenGoogleSheet && (
+              <button
+                onClick={onOpenGoogleSheet}
+                title="ซิงค์ลิงก์ Google Sheet"
+                className="relative inline-flex items-center justify-center p-2 text-emerald-700 bg-emerald-50 hover:bg-emerald-100 border border-emerald-300 rounded-xl transition-all cursor-pointer shadow-2xs hover:scale-105 active:scale-95 group"
+                aria-label="ซิงค์ Google Sheet"
+              >
+                <FileSpreadsheet className="w-4 h-4 text-emerald-600 group-hover:text-emerald-700 transition-colors" />
+                <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-emerald-500 rounded-full border-2 border-white animate-pulse" />
+              </button>
+            )}
 
             {/* Dark mode toggle */}
             <button
@@ -92,22 +95,13 @@ export const MscNavbar: React.FC<MscNavbarProps> = ({
               )}
             </button>
 
-            {/* Google Sheet button */}
-            <button
-              onClick={onOpenGoogleSheet}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-emerald-800 bg-emerald-50 hover:bg-emerald-100 rounded-xl transition-colors cursor-pointer border border-emerald-300 shadow-2xs"
-            >
-              <FileSpreadsheet className="w-3.5 h-3.5 text-emerald-600" />
-              <span>Google Sheet (วางลิงก์ดึงข้อมูล)</span>
-            </button>
-
             {/* LINE Summary button */}
             <button
               onClick={onOpenLineModal}
               className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-emerald-700 bg-emerald-50 hover:bg-emerald-100 border border-emerald-300 rounded-xl transition-colors cursor-pointer shadow-2xs"
             >
               <MessageCircle className="w-3.5 h-3.5 text-emerald-600" />
-              <span>ส่งสรุป LINE</span>
+              <span>ส่ง LINE</span>
             </button>
           </div>
         </div>

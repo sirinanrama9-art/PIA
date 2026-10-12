@@ -90,25 +90,62 @@ export const GoogleSheetQuickBar: React.FC<GoogleSheetQuickBarProps> = ({
         if (res.ok) {
           csvText = await res.text();
         } else {
-          const errJson = await res.json().catch(() => ({}));
-          throw new Error(errJson.error || `HTTP ${res.status}`);
+          // If 404 happened with targetTab, try one more time without tab parameter (to fetch default active sheet)
+          if (targetTab) {
+            console.warn(`Fetch with tab "${targetTab}" failed, trying default tab...`);
+            const fallbackParams = new URLSearchParams({ url: targetUrl });
+            const fallbackRes = await fetch(`/api/fetch-sheet?${fallbackParams.toString()}`);
+            if (fallbackRes.ok) {
+              csvText = await fallbackRes.text();
+            } else {
+              const errJson = await res.json().catch(() => ({}));
+              throw new Error(errJson.error || `HTTP ${res.status}`);
+            }
+          } else {
+            const errJson = await res.json().catch(() => ({}));
+            throw new Error(errJson.error || `HTTP ${res.status}`);
+          }
         }
       } catch (proxyErr: any) {
         console.warn('Backend proxy fetch failed, attempting client direct gviz fetch...', proxyErr);
 
         // Fallback: direct Google gviz endpoint
-        const idMatch = targetUrl.match(/\/spreadsheets\/d\/([a-zA-Z0-9-_]+)/);
+        const idMatch = targetUrl.match(/\/spreadsheets(?:\/u\/\d+)?\/d\/([a-zA-Z0-9-_]+)/);
         if (idMatch) {
           const spreadsheetId = idMatch[1];
-          const directUrl = targetTab
-            ? `https://docs.google.com/spreadsheets/d/${spreadsheetId}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(targetTab)}`
-            : `https://docs.google.com/spreadsheets/d/${spreadsheetId}/gviz/tq?tqx=out:csv&gid=0`;
+          // Try target tab first
+          let directSuccess = false;
+          if (targetTab) {
+            try {
+              const directUrl = `https://docs.google.com/spreadsheets/d/${spreadsheetId}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(targetTab)}`;
+              const directRes = await fetch(directUrl);
+              if (directRes.ok) {
+                const text = await directRes.text();
+                if (text && !text.includes('<!DOCTYPE html>') && text.trim().length > 0) {
+                  csvText = text;
+                  directSuccess = true;
+                }
+              }
+            } catch (e) {
+              console.warn('Direct tab fetch failed:', e);
+            }
+          }
 
-          const directRes = await fetch(directUrl);
-          if (directRes.ok) {
-            csvText = await directRes.text();
-          } else {
-            throw new Error(proxyErr.message || `ไม่สามารถดึงข้อมูลได้ (สถานะ ${directRes.status})`);
+          if (!directSuccess) {
+            // Try gid=0 or basic export
+            const directUrl = `https://docs.google.com/spreadsheets/d/${spreadsheetId}/gviz/tq?tqx=out:csv&gid=0`;
+            const directRes = await fetch(directUrl);
+            if (directRes.ok) {
+              const text = await directRes.text();
+              if (text && !text.includes('<!DOCTYPE html>') && text.trim().length > 0) {
+                csvText = text;
+                directSuccess = true;
+              }
+            }
+          }
+
+          if (!directSuccess) {
+            throw proxyErr;
           }
         } else {
           throw proxyErr;

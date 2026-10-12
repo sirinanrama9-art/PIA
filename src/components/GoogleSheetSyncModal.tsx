@@ -96,27 +96,63 @@ export const GoogleSheetSyncModal: React.FC<GoogleSheetSyncModalProps> = ({
         if (res.ok) {
           csvText = await res.text();
         } else {
-          const errData = await res.json().catch(() => ({}));
-          throw new Error(errData.error || `HTTP ${res.status}`);
+          // If 404 with custom tab name, try without tab name as fallback
+          if (tabName) {
+            const fallbackQuery = new URLSearchParams({ url: target });
+            const fallbackRes = await fetch(`/api/fetch-sheet?${fallbackQuery.toString()}`);
+            if (fallbackRes.ok) {
+              csvText = await fallbackRes.text();
+            } else {
+              const errData = await res.json().catch(() => ({}));
+              throw new Error(errData.error || `HTTP ${res.status}`);
+            }
+          } else {
+            const errData = await res.json().catch(() => ({}));
+            throw new Error(errData.error || `HTTP ${res.status}`);
+          }
         }
       } catch (proxyErr: any) {
         console.warn('Backend proxy fetch failed, trying direct gviz fetch...', proxyErr);
 
         // Attempt 2: Direct Google gviz CSV fetch fallback
-        let directUrl = target;
-        const idMatch = target.match(/\/spreadsheets\/d\/([a-zA-Z0-9-_]+)/);
+        const idMatch = target.match(/\/spreadsheets(?:\/u\/\d+)?\/d\/([a-zA-Z0-9-_]+)/);
         if (idMatch) {
           const spreadsheetId = idMatch[1];
-          directUrl = tabName
-            ? `https://docs.google.com/spreadsheets/d/${spreadsheetId}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(tabName)}`
-            : `https://docs.google.com/spreadsheets/d/${spreadsheetId}/gviz/tq?tqx=out:csv&gid=0`;
-        }
+          let directSuccess = false;
+          if (tabName) {
+            try {
+              const directUrl = `https://docs.google.com/spreadsheets/d/${spreadsheetId}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(tabName)}`;
+              const directRes = await fetch(directUrl);
+              if (directRes.ok) {
+                const text = await directRes.text();
+                if (text && !text.includes('<!DOCTYPE html>') && text.trim().length > 0) {
+                  csvText = text;
+                  directSuccess = true;
+                }
+              }
+            } catch (e) {
+              console.warn(e);
+            }
+          }
 
-        const directRes = await fetch(directUrl);
-        if (!directRes.ok) {
-          throw new Error(proxyErr.message || `ไม่สามารถดึงข้อมูลจาก Google Sheet ได้ (สถานะ ${directRes.status})`);
+          if (!directSuccess) {
+            const directUrl = `https://docs.google.com/spreadsheets/d/${spreadsheetId}/gviz/tq?tqx=out:csv&gid=0`;
+            const directRes = await fetch(directUrl);
+            if (directRes.ok) {
+              const text = await directRes.text();
+              if (text && !text.includes('<!DOCTYPE html>') && text.trim().length > 0) {
+                csvText = text;
+                directSuccess = true;
+              }
+            }
+          }
+
+          if (!directSuccess) {
+            throw new Error(proxyErr.message || 'ไม่สามารถดึงข้อมูลจาก Google Sheet ได้');
+          }
+        } else {
+          throw proxyErr;
         }
-        csvText = await directRes.text();
       }
 
       if (!csvText || csvText.trim().length === 0) {

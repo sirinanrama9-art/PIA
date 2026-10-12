@@ -17,12 +17,24 @@ async function startServer() {
         return res.status(400).json({ error: 'กรุณาระบุ URL ของ Google Sheet' });
       }
 
-      // Check if it's a valid Google Sheets URL
-      const idMatch = sheetUrl.match(/\/spreadsheets\/d\/([a-zA-Z0-9-_]+)/);
-      const spreadsheetId = idMatch ? idMatch[1] : null;
+      // Extract spreadsheet ID accurately from various URL patterns
+      // Examples:
+      // https://docs.google.com/spreadsheets/d/1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms/edit#gid=0
+      // https://docs.google.com/spreadsheets/u/0/d/1Bxi.../edit
+      // https://docs.google.com/spreadsheets/d/e/2PACX-.../pubhtml
+      let spreadsheetId: string | null = null;
+      const isPublished = sheetUrl.includes('/spreadsheets/d/e/');
+      const publishedMatch = sheetUrl.match(/\/spreadsheets\/d\/e\/([a-zA-Z0-9-_]+)/);
+      const regularMatch = sheetUrl.match(/\/spreadsheets(?:\/u\/\d+)?\/d\/([a-zA-Z0-9-_]+)/);
+
+      if (isPublished && publishedMatch) {
+        spreadsheetId = publishedMatch[1];
+      } else if (regularMatch) {
+        spreadsheetId = regularMatch[1];
+      }
 
       // Extract gid if present
-      let gid = '0';
+      let gid: string | null = null;
       const gidMatch = sheetUrl.match(/[#&?]gid=([0-9]+)/);
       if (gidMatch) {
         gid = gidMatch[1];
@@ -31,8 +43,15 @@ async function startServer() {
       // List candidate URLs to try fetching
       const urlsToTry: string[] = [];
 
-      if (spreadsheetId) {
-        // If sheet name provided (e.g. "ภาพรวม PIA")
+      if (isPublished && spreadsheetId) {
+        // Published to web URLs: https://docs.google.com/spreadsheets/d/e/2PACX-.../pub?output=csv
+        if (gid) {
+          urlsToTry.push(`https://docs.google.com/spreadsheets/d/e/${spreadsheetId}/pub?output=csv&gid=${gid}`);
+        }
+        urlsToTry.push(`https://docs.google.com/spreadsheets/d/e/${spreadsheetId}/pub?output=csv`);
+      } else if (spreadsheetId) {
+        // Standard Google Sheets document
+        // 1. If user provided a sheet tab name (or default "ภาพรวม PIA")
         if (sheetName) {
           urlsToTry.push(
             `https://docs.google.com/spreadsheets/d/${spreadsheetId}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(sheetName)}`,
@@ -40,43 +59,57 @@ async function startServer() {
           );
         }
 
-        // Try with gid
-        urlsToTry.push(
-          `https://docs.google.com/spreadsheets/d/${spreadsheetId}/gviz/tq?tqx=out:csv&gid=${gid}`,
-          `https://docs.google.com/spreadsheets/d/${spreadsheetId}/export?format=csv&gid=${gid}`
-        );
+        // 2. If gid was found in the URL
+        if (gid) {
+          urlsToTry.push(
+            `https://docs.google.com/spreadsheets/d/${spreadsheetId}/gviz/tq?tqx=out:csv&gid=${gid}`,
+            `https://docs.google.com/spreadsheets/d/${spreadsheetId}/export?format=csv&gid=${gid}`
+          );
+        }
 
-        // Try direct gviz without gid
-        urlsToTry.push(`https://docs.google.com/spreadsheets/d/${spreadsheetId}/gviz/tq?tqx=out:csv`);
-      } else if (sheetUrl.includes('output=csv') || sheetUrl.includes('out:csv')) {
-        urlsToTry.push(sheetUrl);
+        // 3. Fallback: first sheet / gid=0
+        urlsToTry.push(
+          `https://docs.google.com/spreadsheets/d/${spreadsheetId}/gviz/tq?tqx=out:csv&gid=0`,
+          `https://docs.google.com/spreadsheets/d/${spreadsheetId}/export?format=csv&gid=0`,
+          `https://docs.google.com/spreadsheets/d/${spreadsheetId}/gviz/tq?tqx=out:csv`
+        );
       } else {
         urlsToTry.push(sheetUrl);
       }
 
       let lastError = '';
       let successfulCsv = '';
+      let lastStatusCode = 200;
 
       for (const targetUrl of urlsToTry) {
         try {
           const response = await fetch(targetUrl, {
             headers: {
-              'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
+              'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
               Accept: 'text/csv,text/plain,*/*',
             },
+            redirect: 'follow',
           });
 
           if (response.ok) {
             const text = await response.text();
-            // Verify it's not an HTML login error page
-            if (text && !text.includes('<!DOCTYPE html>') && text.trim().length > 0) {
+            // Verify it's not an HTML login error page or empty response
+            const trimmed = text.trim();
+            if (trimmed.length > 0 && !trimmed.startsWith('<!DOCTYPE html>') && !trimmed.includes('<html')) {
               successfulCsv = text;
               break;
-            } else if (text && text.includes('accounts.google.com')) {
-              lastError = 'Google Sheet ไฟล์นี้ถูกตั้งเป็นส่วนตัว กรุณาตั้งค่าแชร์ไฟล์เป็น "ทุกคนที่มีลิงก์มีสิทธิ์ดู" (Anyone with the link can view)';
+            } else if (text.includes('accounts.google.com') || text.includes('ServiceLogin')) {
+              lastError = 'Google Sheet ไฟล์นี้ถูกตั้งค่าเป็นส่วนตัว (Private) กรุณากดปุ่ม "แชร์ (Share)" ใน Google Sheets แล้วเปลี่ยนเป็น "ทุกคนที่มีลิงก์มีสิทธิ์ดู" (Anyone with the link can view)';
             }
           } else {
-            lastError = `Google Sheets ตอบกลับ HTTP ${response.status}`;
+            lastStatusCode = response.status;
+            if (response.status === 404) {
+              lastError = `Google Sheets ตอบกลับ HTTP 404 (ไม่พบชีต): ตรวจสอบว่าลิงก์แชร์ถูกต้อง หรือชื่อแท็บ "${sheetName || 'ภาพรวม PIA'}" สะกดตรงกับชื่อแท็บใน Google Sheet`;
+            } else if (response.status === 403 || response.status === 401) {
+              lastError = 'ไม่ได้รับอนุญาต (HTTP 403/401): กรุณาตั้งค่าแชร์ไฟล์เป็น "ทุกคนที่มีลิงก์มีสิทธิ์ดู" (Anyone with the link can view)';
+            } else {
+              lastError = `Google Sheets ตอบกลับ HTTP ${response.status}`;
+            }
           }
         } catch (e: any) {
           lastError = e.message || 'Fetch error';
@@ -88,9 +121,14 @@ async function startServer() {
         return res.send(successfulCsv);
       }
 
-      return res.status(400).json({
-        error: lastError || 'ไม่สามารถดึงข้อมูลจาก Google Sheet ได้ กรุณาตรวจสอบว่าตั้งค่าแชร์ไฟล์เป็น "ทุกคนที่มีลิงก์มีสิทธิ์ดู" และชื่อชีตถูกต้อง',
-      });
+      // If failed with 404 or other error, return helpful explanation
+      const userMessage = lastError || (
+        lastStatusCode === 404
+          ? `ไม่พบข้อมูลชีต (HTTP 404): กรุณาตรวจสอบว่าชื่อแท็บ "${sheetName || 'ภาพรวม PIA'}" มีอยู่ใน Google Sheet จริง หรือลบชื่อแท็บออกเพื่อดึงแท็บแรก (gid=0)`
+          : 'ไม่สามารถดึงข้อมูลจาก Google Sheet ได้ กรุณาตรวจสอบว่าตั้งค่าแชร์เป็น "ทุกคนที่มีลิงก์มีสิทธิ์ดู"'
+      );
+
+      return res.status(400).json({ error: userMessage });
     } catch (err: any) {
       return res.status(500).json({ error: err.message || 'ไม่สามารถดึงข้อมูลจาก Google Sheet ได้' });
     }

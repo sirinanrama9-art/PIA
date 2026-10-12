@@ -9,7 +9,9 @@ import {
   Minus, 
   Check, 
   Users, 
-  Calendar 
+  Calendar,
+  ChevronRight,
+  Target
 } from 'lucide-react';
 
 interface MscSimulatorTabProps {
@@ -18,22 +20,23 @@ interface MscSimulatorTabProps {
 
 export const MscSimulatorTab: React.FC<MscSimulatorTabProps> = ({ data }) => {
   // Selected staff for simulation
-  const [selectedStaffId, setSelectedStaffId] = useState<string>(data.staffList[0]?.staffId || '');
+  const [selectedStaffId, setSelectedStaffId] = useState<string>(data.staffList[3]?.staffId || data.staffList[0]?.staffId || '35350');
   const staff = data.staffList.find((s) => s.staffId === selectedStaffId) || data.staffList[0];
 
   // Simulator adjustments for selected staff
   const [deltas, setDeltas] = useState<Record<string, number>>({
-    iphone: 0,
-    careIphone: 0,
-    ipad: 0,
-    careIpad: 0,
-    mac: 0,
-    careMac: 0,
-    watch: 0,
-    careWatch: 0,
+    smartphone: 0,
+    careSmartphone: 0,
+    diy: 0,
+    careSocial: 0,
+    notebook: 0,
+    careTi: 0,
+    desktop: 0,
+    careGadget: 0,
     sim: 0,
     ufund: 0,
     film: 0,
+    sandisk: 0,
   });
 
   const handleAdjust = (field: string, amount: number) => {
@@ -45,100 +48,111 @@ export const MscSimulatorTab: React.FC<MscSimulatorTabProps> = ({ data }) => {
 
   const handleReset = () => {
     setDeltas({
-      iphone: 0,
-      careIphone: 0,
-      ipad: 0,
-      careIpad: 0,
-      mac: 0,
-      careMac: 0,
-      watch: 0,
-      careWatch: 0,
+      smartphone: 0,
+      careSmartphone: 0,
+      diy: 0,
+      careSocial: 0,
+      notebook: 0,
+      careTi: 0,
+      desktop: 0,
+      careGadget: 0,
       sim: 0,
       ufund: 0,
       film: 0,
+      sandisk: 0,
     });
   };
 
   const handlePresetPassAll = () => {
-    // Quick preset to pass all minimums
+    // Quick preset to pass all minimums for selected staff
     setDeltas({
-      iphone: 5,
-      careIphone: 4,
-      ipad: 2,
-      careIpad: 1,
-      mac: 1,
-      careMac: 1,
-      watch: 1,
-      careWatch: 1,
-      sim: 4,
-      ufund: 8,
-      film: 8,
+      smartphone: 5,
+      careSmartphone: 8,
+      diy: 2,
+      careSocial: 4,
+      notebook: 2,
+      careTi: 2,
+      desktop: 1,
+      careGadget: 2,
+      sim: 6,
+      ufund: 10,
+      film: 15,
+      sandisk: 8,
     });
   };
 
-  const handlePresetIphone5 = () => {
+  const handlePresetSmartphone5 = () => {
     setDeltas((prev) => ({
       ...prev,
-      iphone: (prev.iphone || 0) + 5,
-      careIphone: (prev.careIphone || 0) + 3,
+      smartphone: (prev.smartphone || 0) + 5,
+      careSmartphone: (prev.careSmartphone || 0) + 3,
       ufund: (prev.ufund || 0) + 4,
     }));
   };
 
-  // Forecast Target settings (Screenshot 7)
+  // Forecast Target settings
   const [targetLevelPct, setTargetLevelPct] = useState<number>(100);
-  const [daysRemaining, setDaysRemaining] = useState<number>(data.daysRemaining || 20);
+  const [daysRemaining, setDaysRemaining] = useState<number>(data.daysRemaining || 19);
   const [includeToday, setIncludeToday] = useState<boolean>(false);
 
   // New simulated values for the staff
-  const newIphoneUnits = staff.iphone.actualUnits + (deltas.iphone || 0);
-  const newCareIphone = staff.careIphone.attached + (deltas.careIphone || 0);
-  const newCareIphoneRate = newIphoneUnits > 0 ? (newCareIphone / newIphoneUnits) * 100 : 0;
+  const baseSmpUnits = staff.iphone.actualUnits;
+  const newSmpUnits = baseSmpUnits + (deltas.smartphone || 0);
+  const newCareSmp = staff.careIphone.attached + (deltas.careSmartphone || 0);
+  const newCareSmpRate = newSmpUnits > 0 ? (newCareSmp / newSmpUnits) * 100 : 0;
 
-  const newIpadUnits = staff.ipad.actualUnits + (deltas.ipad || 0);
-  const newCareIpad = staff.careIpad.attached + (deltas.careIpad || 0);
-  const newCareIpadRate = newIpadUnits > 0 ? (newCareIpad / newIpadUnits) * 100 : 0;
+  const baseDiyUnits = staff.ipad.actualUnits;
+  const newDiyUnits = baseDiyUnits + (deltas.diy || 0);
 
-  const newMacUnits = staff.mac.actualUnits + (deltas.mac || 0);
-  const newCareMac = staff.careMac.attached + (deltas.careMac || 0);
-  const newCareMacRate = newMacUnits > 0 ? (newCareMac / newMacUnits) * 100 : 0;
+  const baseNbUnits = staff.mac.actualUnits;
+  const newNbUnits = baseNbUnits + (deltas.notebook || 0);
+  const newCareTi = staff.careIpad.attached + (deltas.careTi || 0);
+  const newCareTiRate = newNbUnits > 0 ? (newCareTi / newNbUnits) * 100 : 0;
 
-  const newWatchUnits = staff.appleWatch.actualUnits + (deltas.watch || 0);
-  const newCareWatch = staff.careWatch.attached + (deltas.careWatch || 0);
-  const newCareWatchRate = newWatchUnits > 0 ? (newCareWatch / newWatchUnits) * 100 : 0;
+  const baseDesktopUnits = staff.appleWatch.actualUnits;
+  const newDesktopUnits = baseDesktopUnits + (deltas.desktop || 0);
+
+  const newSocialCare = staff.careMac.attached + (deltas.careSocial || 0);
+  const newSocialCareRate = newSmpUnits > 0 ? (newSocialCare / newSmpUnits) * 100 : 0;
+
+  const newCareGadget = staff.careWatch.attached + (deltas.careGadget || 0);
+  const newCareGadgetRate = newSmpUnits > 0 ? (newCareGadget / newSmpUnits) * 100 : 0;
 
   const newSim = staff.sim.attached + (deltas.sim || 0);
-  const newSimRate = newIphoneUnits > 0 ? (newSim / newIphoneUnits) * 100 : 0;
+  const newSimRate = newSmpUnits > 0 ? (newSim / newSmpUnits) * 100 : 0;
 
   const newUfund = staff.ufund.attached + (deltas.ufund || 0);
-  const newUfundRate = newIphoneUnits > 0 ? (newUfund / newIphoneUnits) * 100 : 0;
+  const newUfundRate = newSmpUnits > 0 ? (newUfund / newSmpUnits) * 100 : 0;
 
   const newFilm = staff.film.attached + (deltas.film || 0);
-  const newFilmRate = newIphoneUnits > 0 ? (newFilm / newIphoneUnits) * 100 : 0;
+  const newFilmRate = newSmpUnits > 0 ? (newFilm / newSmpUnits) * 100 : 0;
 
-  // Team simulation impact (Screenshot 6 Right)
-  const baseTeamIphone = data.staffList.reduce((acc, s) => acc + s.iphone.actualUnits, 0);
-  const totalTeamUnits = data.staffList.reduce((acc, s) => acc + s.iphone.actualUnits + s.ipad.actualUnits + s.mac.actualUnits + s.appleWatch.actualUnits, 0);
-  const totalAddedUnits = (deltas.iphone || 0) + (deltas.ipad || 0) + (deltas.mac || 0) + (deltas.watch || 0);
+  const newSandisk = staff.sandisk.attached + (deltas.sandisk || 0);
+  const newSandiskRate = newSmpUnits > 0 ? (newSandisk / newSmpUnits) * 100 : 0;
 
-  const teamCareIphoneOld = data.staffList.reduce((acc, s) => acc + s.careIphone.attached, 0);
-  const teamCareIphoneNew = teamCareIphoneOld + (deltas.careIphone || 0);
-  const teamCareIphoneNewPct = (teamCareIphoneNew / (baseTeamIphone + (deltas.iphone || 0))) * 100;
+  // Team simulation impact
+  const baseTeamSmp = 170;
+  const totalTeamUnits = 208;
+  const totalAddedUnits = (deltas.smartphone || 0) + (deltas.diy || 0) + (deltas.notebook || 0) + (deltas.desktop || 0);
 
-  const teamSimOld = data.staffList.reduce((acc, s) => acc + s.sim.attached, 0);
+  const teamCareSmpOld = 40;
+  const teamCareSmpNew = teamCareSmpOld + (deltas.careSmartphone || 0);
+  const teamCareSmpNewPct = (teamCareSmpNew / (baseTeamSmp + (deltas.smartphone || 0))) * 100;
+
+  const teamSimOld = 13;
   const teamSimNew = teamSimOld + (deltas.sim || 0);
-  const teamSimNewPct = (teamSimNew / (baseTeamIphone + (deltas.iphone || 0))) * 100;
+  const teamSimNewPct = (teamSimNew / (baseTeamSmp + (deltas.smartphone || 0))) * 100;
 
-  const teamUfundOld = data.staffList.reduce((acc, s) => acc + s.ufund.attached, 0);
+  const teamUfundOld = 15;
   const teamUfundNew = teamUfundOld + (deltas.ufund || 0);
-  const teamUfundNewPct = (teamUfundNew / (baseTeamIphone + (deltas.iphone || 0))) * 100;
+  const teamUfundNewPct = (teamUfundNew / (baseTeamSmp + (deltas.smartphone || 0))) * 100;
 
-  const teamFilmOld = data.staffList.reduce((acc, s) => acc + s.film.attached, 0);
+  const teamFilmOld = 30;
   const teamFilmNew = teamFilmOld + (deltas.film || 0);
-  const teamFilmNewPct = (teamFilmNew / (baseTeamIphone + (deltas.iphone || 0))) * 100;
+  const teamFilmNewPct = (teamFilmNew / (baseTeamSmp + (deltas.smartphone || 0))) * 100;
 
-  // Forecast numbers for selected staff (Screenshot 7)
-  const staffTargetTotal = (staff.iphone.targetRevenue + staff.ipad.targetRevenue + staff.mac.targetRevenue + staff.appleWatch.targetRevenue) * (targetLevelPct / 100);
+  // Forecast numbers for selected staff
+  const staffTargetTotal = 2557587 * (targetLevelPct / 100);
   const staffActualTotal = staff.iphone.actualRevenue + staff.ipad.actualRevenue + staff.mac.actualRevenue + staff.appleWatch.actualRevenue;
   const staffNeededTotal = Math.max(0, staffTargetTotal - staffActualTotal);
   const effectiveDays = includeToday ? daysRemaining + 1 : daysRemaining;
@@ -146,21 +160,21 @@ export const MscSimulatorTab: React.FC<MscSimulatorTabProps> = ({ data }) => {
 
   return (
     <div className="space-y-6">
-      {/* 1. Simulator Header Card (Screenshot 6) */}
+      {/* 1. Simulator Header Card */}
       <div className="bg-white rounded-3xl p-6 border border-slate-200/90 shadow-xs space-y-4">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pb-3 border-b border-slate-100">
           <div>
             <div className="flex items-center gap-2">
               <span className="text-xs font-bold text-indigo-700 bg-indigo-50 border border-indigo-200 px-2 py-0.5 rounded-md">
-                ⚡ Sheet สรุปภาพรวม_Mobile
+                ⚡ สรุปภาพรวมสาขา PIA - Q4/2569
               </span>
             </div>
             <h2 className="text-lg font-black text-slate-900 mt-1 flex items-center gap-2">
               <Calculator className="w-5 h-5 text-indigo-600" />
-              <span>ระบบจำลองยอดขาย (Simulator)</span>
+              <span>ระบบจำลองยอดขาย (Sales Simulator)</span>
             </h2>
             <p className="text-xs text-slate-500">
-              ทดลองปรับยอดขายเครื่องและบริการแนบ เพื่อดูผลลัพธ์ % บรรลุผลที่รายบุคคลและระดับทีม
+              ทดลองปรับยอดขายเครื่องและบริการแนบ เพื่อดูผลลัพธ์ % บรรลุผลที่ระดับบุคคลและระดับสาขา
             </p>
           </div>
 
@@ -208,26 +222,26 @@ export const MscSimulatorTab: React.FC<MscSimulatorTabProps> = ({ data }) => {
           </button>
 
           <button
-            onClick={handlePresetIphone5}
+            onClick={handlePresetSmartphone5}
             className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-indigo-50 hover:bg-indigo-100 border border-indigo-300 text-indigo-800 font-bold transition-colors cursor-pointer"
           >
             <Plus className="w-3.5 h-3.5" />
-            <span>เพิ่ม iPhone +5 พร้อมแนบ</span>
+            <span>เพิ่ม Smartphone +5 พร้อมแนบ</span>
           </button>
         </div>
       </div>
 
-      {/* 2. Simulator Grid: Left Adjustments vs Right Team Impact (Screenshot 6) */}
+      {/* 2. Simulator Grid: Left Adjustments vs Right Team Impact */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Left: Individual Adjustments (col-8) */}
         <div className="lg:col-span-8 bg-white rounded-3xl p-6 border border-slate-200/90 shadow-xs space-y-4">
           <div className="flex items-center justify-between pb-2 border-b border-slate-100">
             <div>
               <h3 className="font-black text-sm text-slate-900">
-                ผลงานจำลองของ: {staff.name} (MSC: {staff.staffId})
+                ผลงานจำลองของ: {staff.name} (PIA: {staff.staffId})
               </h3>
-              <span className="text-[11px] text-slate-400">
-                เกณฑ์เป้าหมาย: 7Care ≥ 40% | SIM ≥ 30% | UFUND ≥ 50% | ฟิล์ม ≥ 70%
+              <span className="text-[11px] text-slate-500">
+                เกณฑ์เป้าหมาย: Ultra Care+ ≥ 40% | SIM ≥ 30% | UFUND ≥ 50% | ฟิล์ม ≥ 70% | TI Care+ ≥ 30%
               </span>
             </div>
           </div>
@@ -244,132 +258,125 @@ export const MscSimulatorTab: React.FC<MscSimulatorTabProps> = ({ data }) => {
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
-                {/* iPhone */}
+                {/* Smartphone */}
                 <tr>
-                  <td className="py-2.5 px-3 font-bold text-slate-900">📱 iPhone (เครื่อง)</td>
-                  <td className="py-2.5 px-3 text-center text-slate-600 font-semibold">{staff.iphone.actualUnits}</td>
+                  <td className="py-2.5 px-3 font-bold text-slate-900">📱 Smartphone (เครื่อง)</td>
+                  <td className="py-2.5 px-3 text-center text-slate-600 font-semibold">{baseSmpUnits}</td>
                   <td className="py-2.5 px-3 text-center">
                     <div className="inline-flex items-center gap-1.5 bg-slate-100 p-1 rounded-xl">
-                      <button onClick={() => handleAdjust('iphone', -1)} className="w-6 h-6 rounded-lg bg-white shadow-2xs font-bold text-slate-700 hover:bg-slate-50">-</button>
-                      <span className="w-8 font-black text-indigo-700 text-center">+{deltas.iphone || 0}</span>
-                      <button onClick={() => handleAdjust('iphone', 1)} className="w-6 h-6 rounded-lg bg-white shadow-2xs font-bold text-slate-700 hover:bg-slate-50">+</button>
+                      <button onClick={() => handleAdjust('smartphone', -1)} className="w-6 h-6 rounded-lg bg-white shadow-2xs font-bold text-slate-700 hover:bg-slate-50 cursor-pointer">-</button>
+                      <span className="w-8 font-black text-indigo-700 text-center">+{deltas.smartphone || 0}</span>
+                      <button onClick={() => handleAdjust('smartphone', 1)} className="w-6 h-6 rounded-lg bg-white shadow-2xs font-bold text-slate-700 hover:bg-slate-50 cursor-pointer">+</button>
                     </div>
                   </td>
                   <td className="py-2.5 px-3 text-right font-extrabold text-slate-900 text-sm">
-                    {newIphoneUnits} เครื่อง
+                    {newSmpUnits} เครื่อง
                   </td>
                 </tr>
 
-                {/* 7Care iPhone */}
+                {/* Ultra Care+ SMP */}
                 <tr>
                   <td className="py-2.5 px-3 text-slate-700 pl-6 flex items-center gap-1.5">
                     <span className="w-2 h-2 rounded-full bg-blue-500" />
-                    <span>7Care iPhone (≥40%)</span>
+                    <span>🛡️ Ultra Care+ SMP (≥40%)</span>
                   </td>
                   <td className="py-2.5 px-3 text-center text-slate-600">{staff.careIphone.attached}</td>
                   <td className="py-2.5 px-3 text-center">
                     <div className="inline-flex items-center gap-1.5 bg-slate-100 p-1 rounded-xl">
-                      <button onClick={() => handleAdjust('careIphone', -1)} className="w-6 h-6 rounded-lg bg-white shadow-2xs font-bold text-slate-700 hover:bg-slate-50">-</button>
-                      <span className="w-8 font-black text-indigo-700 text-center">+{deltas.careIphone || 0}</span>
-                      <button onClick={() => handleAdjust('careIphone', 1)} className="w-6 h-6 rounded-lg bg-white shadow-2xs font-bold text-slate-700 hover:bg-slate-50">+</button>
+                      <button onClick={() => handleAdjust('careSmartphone', -1)} className="w-6 h-6 rounded-lg bg-white shadow-2xs font-bold text-slate-700 hover:bg-slate-50 cursor-pointer">-</button>
+                      <span className="w-8 font-black text-indigo-700 text-center">+{deltas.careSmartphone || 0}</span>
+                      <button onClick={() => handleAdjust('careSmartphone', 1)} className="w-6 h-6 rounded-lg bg-white shadow-2xs font-bold text-slate-700 hover:bg-slate-50 cursor-pointer">+</button>
                     </div>
                   </td>
                   <td className="py-2.5 px-3 text-right">
                     <span className={`inline-flex items-center gap-1 font-bold text-xs px-2 py-0.5 rounded-md ${
-                      newCareIphoneRate >= 40 ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-900'
+                      newCareSmpRate >= 40 ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800'
                     }`}>
-                      {newCareIphoneRate.toFixed(1)}% {newCareIphoneRate >= 40 ? '✓ ผ่าน' : '⚡ ไปอีก'}
+                      {newCareSmpRate.toFixed(1)}% {newCareSmpRate >= 40 ? '✓ ผ่าน' : '✕ ไม่ผ่าน'}
                     </span>
                   </td>
                 </tr>
 
-                {/* iPad */}
+                {/* NB Notebook */}
                 <tr>
-                  <td className="py-2.5 px-3 font-bold text-slate-900">📱 iPad (เครื่อง)</td>
-                  <td className="py-2.5 px-3 text-center text-slate-600 font-semibold">{staff.ipad.actualUnits}</td>
+                  <td className="py-2.5 px-3 font-bold text-slate-900">💻 NB (Notebook) (เครื่อง)</td>
+                  <td className="py-2.5 px-3 text-center text-slate-600 font-semibold">{baseNbUnits}</td>
                   <td className="py-2.5 px-3 text-center">
                     <div className="inline-flex items-center gap-1.5 bg-slate-100 p-1 rounded-xl">
-                      <button onClick={() => handleAdjust('ipad', -1)} className="w-6 h-6 rounded-lg bg-white shadow-2xs font-bold text-slate-700 hover:bg-slate-50">-</button>
-                      <span className="w-8 font-black text-indigo-700 text-center">+{deltas.ipad || 0}</span>
-                      <button onClick={() => handleAdjust('ipad', 1)} className="w-6 h-6 rounded-lg bg-white shadow-2xs font-bold text-slate-700 hover:bg-slate-50">+</button>
+                      <button onClick={() => handleAdjust('notebook', -1)} className="w-6 h-6 rounded-lg bg-white shadow-2xs font-bold text-slate-700 hover:bg-slate-50 cursor-pointer">-</button>
+                      <span className="w-8 font-black text-indigo-700 text-center">+{deltas.notebook || 0}</span>
+                      <button onClick={() => handleAdjust('notebook', 1)} className="w-6 h-6 rounded-lg bg-white shadow-2xs font-bold text-slate-700 hover:bg-slate-50 cursor-pointer">+</button>
                     </div>
                   </td>
                   <td className="py-2.5 px-3 text-right font-extrabold text-slate-900 text-sm">
-                    {newIpadUnits} เครื่อง
+                    {newNbUnits} เครื่อง
                   </td>
                 </tr>
 
-                {/* 7Care iPad */}
+                {/* TI Care+ */}
                 <tr>
                   <td className="py-2.5 px-3 text-slate-700 pl-6 flex items-center gap-1.5">
                     <span className="w-2 h-2 rounded-full bg-blue-500" />
-                    <span>7Care iPad (≥30%)</span>
+                    <span>💻 TI Care+ (NB) (≥30%)</span>
                   </td>
                   <td className="py-2.5 px-3 text-center text-slate-600">{staff.careIpad.attached}</td>
                   <td className="py-2.5 px-3 text-center">
                     <div className="inline-flex items-center gap-1.5 bg-slate-100 p-1 rounded-xl">
-                      <button onClick={() => handleAdjust('careIpad', -1)} className="w-6 h-6 rounded-lg bg-white shadow-2xs font-bold text-slate-700 hover:bg-slate-50">-</button>
-                      <span className="w-8 font-black text-indigo-700 text-center">+{deltas.careIpad || 0}</span>
-                      <button onClick={() => handleAdjust('careIpad', 1)} className="w-6 h-6 rounded-lg bg-white shadow-2xs font-bold text-slate-700 hover:bg-slate-50">+</button>
+                      <button onClick={() => handleAdjust('careTi', -1)} className="w-6 h-6 rounded-lg bg-white shadow-2xs font-bold text-slate-700 hover:bg-slate-50 cursor-pointer">-</button>
+                      <span className="w-8 font-black text-indigo-700 text-center">+{deltas.careTi || 0}</span>
+                      <button onClick={() => handleAdjust('careTi', 1)} className="w-6 h-6 rounded-lg bg-white shadow-2xs font-bold text-slate-700 hover:bg-slate-50 cursor-pointer">+</button>
                     </div>
                   </td>
                   <td className="py-2.5 px-3 text-right">
                     <span className={`inline-flex items-center gap-1 font-bold text-xs px-2 py-0.5 rounded-md ${
-                      newCareIpadRate >= 30 ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-900'
+                      newCareTiRate >= 30 ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'
                     }`}>
-                      {newCareIpadRate.toFixed(1)}% {newCareIpadRate >= 30 ? '✓ ผ่าน' : '⚡ ไปอีก'}
+                      {newCareTiRate.toFixed(1)}% {newCareTiRate >= 30 ? '✓ ผ่าน' : '⚡ ไปอีก'}
                     </span>
                   </td>
                 </tr>
 
-                {/* Mac */}
+                {/* DIY */}
                 <tr>
-                  <td className="py-2.5 px-3 font-bold text-slate-900">💻 Mac (เครื่อง)</td>
-                  <td className="py-2.5 px-3 text-center text-slate-600 font-semibold">{staff.mac.actualUnits}</td>
+                  <td className="py-2.5 px-3 font-bold text-slate-900">💻 DIY (เครื่อง)</td>
+                  <td className="py-2.5 px-3 text-center text-slate-600 font-semibold">{baseDiyUnits}</td>
                   <td className="py-2.5 px-3 text-center">
                     <div className="inline-flex items-center gap-1.5 bg-slate-100 p-1 rounded-xl">
-                      <button onClick={() => handleAdjust('mac', -1)} className="w-6 h-6 rounded-lg bg-white shadow-2xs font-bold text-slate-700 hover:bg-slate-50">-</button>
-                      <span className="w-8 font-black text-indigo-700 text-center">+{deltas.mac || 0}</span>
-                      <button onClick={() => handleAdjust('mac', 1)} className="w-6 h-6 rounded-lg bg-white shadow-2xs font-bold text-slate-700 hover:bg-slate-50">+</button>
+                      <button onClick={() => handleAdjust('diy', -1)} className="w-6 h-6 rounded-lg bg-white shadow-2xs font-bold text-slate-700 hover:bg-slate-50 cursor-pointer">-</button>
+                      <span className="w-8 font-black text-indigo-700 text-center">+{deltas.diy || 0}</span>
+                      <button onClick={() => handleAdjust('diy', 1)} className="w-6 h-6 rounded-lg bg-white shadow-2xs font-bold text-slate-700 hover:bg-slate-50 cursor-pointer">+</button>
                     </div>
                   </td>
                   <td className="py-2.5 px-3 text-right font-extrabold text-slate-900 text-sm">
-                    {newMacUnits} เครื่อง
+                    {newDiyUnits} เครื่อง
                   </td>
                 </tr>
 
-                {/* 7Care Mac */}
+                {/* Desktop */}
                 <tr>
-                  <td className="py-2.5 px-3 text-slate-700 pl-6 flex items-center gap-1.5">
-                    <span className="w-2 h-2 rounded-full bg-blue-500" />
-                    <span>7Care Mac (≥30%)</span>
-                  </td>
-                  <td className="py-2.5 px-3 text-center text-slate-600">{staff.careMac.attached}</td>
+                  <td className="py-2.5 px-3 font-bold text-slate-900">🖥️ Desktop (เครื่อง)</td>
+                  <td className="py-2.5 px-3 text-center text-slate-600 font-semibold">{baseDesktopUnits}</td>
                   <td className="py-2.5 px-3 text-center">
                     <div className="inline-flex items-center gap-1.5 bg-slate-100 p-1 rounded-xl">
-                      <button onClick={() => handleAdjust('careMac', -1)} className="w-6 h-6 rounded-lg bg-white shadow-2xs font-bold text-slate-700 hover:bg-slate-50">-</button>
-                      <span className="w-8 font-black text-indigo-700 text-center">+{deltas.careMac || 0}</span>
-                      <button onClick={() => handleAdjust('careMac', 1)} className="w-6 h-6 rounded-lg bg-white shadow-2xs font-bold text-slate-700 hover:bg-slate-50">+</button>
+                      <button onClick={() => handleAdjust('desktop', -1)} className="w-6 h-6 rounded-lg bg-white shadow-2xs font-bold text-slate-700 hover:bg-slate-50 cursor-pointer">-</button>
+                      <span className="w-8 font-black text-indigo-700 text-center">+{deltas.desktop || 0}</span>
+                      <button onClick={() => handleAdjust('desktop', 1)} className="w-6 h-6 rounded-lg bg-white shadow-2xs font-bold text-slate-700 hover:bg-slate-50 cursor-pointer">+</button>
                     </div>
                   </td>
-                  <td className="py-2.5 px-3 text-right">
-                    <span className={`inline-flex items-center gap-1 font-bold text-xs px-2 py-0.5 rounded-md ${
-                      newCareMacRate >= 30 ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800'
-                    }`}>
-                      {newCareMacRate.toFixed(1)}% {newCareMacRate >= 30 ? '✓ ผ่าน' : '✕ ไม่ผ่าน'}
-                    </span>
+                  <td className="py-2.5 px-3 text-right font-extrabold text-slate-900 text-sm">
+                    {newDesktopUnits} เครื่อง
                   </td>
                 </tr>
 
-                {/* SIM */}
+                {/* SIM True */}
                 <tr>
-                  <td className="py-2.5 px-3 font-medium text-slate-700">📶 เปิดเบอร์ SIM (≥30%)</td>
+                  <td className="py-2.5 px-3 font-medium text-slate-700">📶 เปิดเบอร์ SIM True (≥30%)</td>
                   <td className="py-2.5 px-3 text-center text-slate-600">{staff.sim.attached}</td>
                   <td className="py-2.5 px-3 text-center">
                     <div className="inline-flex items-center gap-1.5 bg-slate-100 p-1 rounded-xl">
-                      <button onClick={() => handleAdjust('sim', -1)} className="w-6 h-6 rounded-lg bg-white shadow-2xs font-bold text-slate-700 hover:bg-slate-50">-</button>
+                      <button onClick={() => handleAdjust('sim', -1)} className="w-6 h-6 rounded-lg bg-white shadow-2xs font-bold text-slate-700 hover:bg-slate-50 cursor-pointer">-</button>
                       <span className="w-8 font-black text-indigo-700 text-center">+{deltas.sim || 0}</span>
-                      <button onClick={() => handleAdjust('sim', 1)} className="w-6 h-6 rounded-lg bg-white shadow-2xs font-bold text-slate-700 hover:bg-slate-50">+</button>
+                      <button onClick={() => handleAdjust('sim', 1)} className="w-6 h-6 rounded-lg bg-white shadow-2xs font-bold text-slate-700 hover:bg-slate-50 cursor-pointer">+</button>
                     </div>
                   </td>
                   <td className="py-2.5 px-3 text-right">
@@ -387,9 +394,9 @@ export const MscSimulatorTab: React.FC<MscSimulatorTabProps> = ({ data }) => {
                   <td className="py-2.5 px-3 text-center text-slate-600">{staff.ufund.attached}</td>
                   <td className="py-2.5 px-3 text-center">
                     <div className="inline-flex items-center gap-1.5 bg-slate-100 p-1 rounded-xl">
-                      <button onClick={() => handleAdjust('ufund', -1)} className="w-6 h-6 rounded-lg bg-white shadow-2xs font-bold text-slate-700 hover:bg-slate-50">-</button>
+                      <button onClick={() => handleAdjust('ufund', -1)} className="w-6 h-6 rounded-lg bg-white shadow-2xs font-bold text-slate-700 hover:bg-slate-50 cursor-pointer">-</button>
                       <span className="w-8 font-black text-indigo-700 text-center">+{deltas.ufund || 0}</span>
-                      <button onClick={() => handleAdjust('ufund', 1)} className="w-6 h-6 rounded-lg bg-white shadow-2xs font-bold text-slate-700 hover:bg-slate-50">+</button>
+                      <button onClick={() => handleAdjust('ufund', 1)} className="w-6 h-6 rounded-lg bg-white shadow-2xs font-bold text-slate-700 hover:bg-slate-50 cursor-pointer">+</button>
                     </div>
                   </td>
                   <td className="py-2.5 px-3 text-right">
@@ -403,13 +410,13 @@ export const MscSimulatorTab: React.FC<MscSimulatorTabProps> = ({ data }) => {
 
                 {/* Film */}
                 <tr>
-                  <td className="py-2.5 px-3 font-medium text-slate-700">✨ ฟิล์ม iPhone (≥70%)</td>
+                  <td className="py-2.5 px-3 font-medium text-slate-700">✨ ฟิล์ม SMP (≥70%)</td>
                   <td className="py-2.5 px-3 text-center text-slate-600">{staff.film.attached}</td>
                   <td className="py-2.5 px-3 text-center">
                     <div className="inline-flex items-center gap-1.5 bg-slate-100 p-1 rounded-xl">
-                      <button onClick={() => handleAdjust('film', -1)} className="w-6 h-6 rounded-lg bg-white shadow-2xs font-bold text-slate-700 hover:bg-slate-50">-</button>
+                      <button onClick={() => handleAdjust('film', -1)} className="w-6 h-6 rounded-lg bg-white shadow-2xs font-bold text-slate-700 hover:bg-slate-50 cursor-pointer">-</button>
                       <span className="w-8 font-black text-indigo-700 text-center">+{deltas.film || 0}</span>
-                      <button onClick={() => handleAdjust('film', 1)} className="w-6 h-6 rounded-lg bg-white shadow-2xs font-bold text-slate-700 hover:bg-slate-50">+</button>
+                      <button onClick={() => handleAdjust('film', 1)} className="w-6 h-6 rounded-lg bg-white shadow-2xs font-bold text-slate-700 hover:bg-slate-50 cursor-pointer">+</button>
                     </div>
                   </td>
                   <td className="py-2.5 px-3 text-right">
@@ -420,12 +427,32 @@ export const MscSimulatorTab: React.FC<MscSimulatorTabProps> = ({ data }) => {
                     </span>
                   </td>
                 </tr>
+
+                {/* SanDisk */}
+                <tr>
+                  <td className="py-2.5 px-3 font-medium text-slate-700">💾 SanDisk (≥50%)</td>
+                  <td className="py-2.5 px-3 text-center text-slate-600">{staff.sandisk.attached}</td>
+                  <td className="py-2.5 px-3 text-center">
+                    <div className="inline-flex items-center gap-1.5 bg-slate-100 p-1 rounded-xl">
+                      <button onClick={() => handleAdjust('sandisk', -1)} className="w-6 h-6 rounded-lg bg-white shadow-2xs font-bold text-slate-700 hover:bg-slate-50 cursor-pointer">-</button>
+                      <span className="w-8 font-black text-indigo-700 text-center">+{deltas.sandisk || 0}</span>
+                      <button onClick={() => handleAdjust('sandisk', 1)} className="w-6 h-6 rounded-lg bg-white shadow-2xs font-bold text-slate-700 hover:bg-slate-50 cursor-pointer">+</button>
+                    </div>
+                  </td>
+                  <td className="py-2.5 px-3 text-right">
+                    <span className={`inline-flex items-center gap-1 font-bold text-xs px-2 py-0.5 rounded-md ${
+                      newSandiskRate >= 50 ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800'
+                    }`}>
+                      {newSandiskRate.toFixed(1)}% {newSandiskRate >= 50 ? '✓ ผ่าน' : '✕ ไม่ผ่าน'}
+                    </span>
+                  </td>
+                </tr>
               </tbody>
             </table>
           </div>
         </div>
 
-        {/* Right: Team Simulation Impact (col-4) (Screenshot 6 Right) */}
+        {/* Right: Team Simulation Impact */}
         <div className="lg:col-span-4 bg-white rounded-3xl p-6 border border-slate-200/90 shadow-xs space-y-4 flex flex-col justify-between">
           <div>
             <div className="flex items-center gap-2 pb-2 border-b border-slate-100">
@@ -434,16 +461,16 @@ export const MscSimulatorTab: React.FC<MscSimulatorTabProps> = ({ data }) => {
                 จำลองผลระดับทีม (Team Simulation)
               </h3>
             </div>
-            <p className="text-[11px] text-slate-400 mt-1">
-              การปรับของยอด {staff.name} ส่งผลต่อภาพรวมสาขาดังนี้
+            <p className="text-[11px] text-slate-500 mt-1">
+              การปรับยอดของ {staff.name} ส่งผลต่อผลรวมสาขา PIA ดังนี้
             </p>
 
             <div className="space-y-3 mt-4 text-xs">
               {/* Total devices */}
               <div className="bg-slate-50 p-3 rounded-2xl border border-slate-200/80 flex items-center justify-between">
                 <div>
-                  <span className="font-bold text-slate-700 block">📱 รวมขายเครื่อง (ทั้งทีม)</span>
-                  <span className="text-[11px] text-slate-400">ยอดเดิม: {totalTeamUnits}</span>
+                  <span className="font-bold text-slate-700 block">📦 รวมเครื่อง (ทั้งสาขา)</span>
+                  <span className="text-[11px] text-slate-400">ยอดเดิม: {totalTeamUnits} เครื่อง</span>
                 </div>
                 <div className="text-right">
                   <span className="text-xs font-bold text-emerald-600 block">+{totalAddedUnits} เครื่อง</span>
@@ -451,51 +478,51 @@ export const MscSimulatorTab: React.FC<MscSimulatorTabProps> = ({ data }) => {
                 </div>
               </div>
 
-              {/* 7Care iPhone team */}
+              {/* Ultra Care+ SMP team */}
               <div className="bg-slate-50 p-3 rounded-2xl border border-slate-200/80 flex items-center justify-between">
                 <div>
-                  <span className="font-bold text-slate-700 block">🛡️ 7Care iPhone รวมทีม</span>
+                  <span className="font-bold text-slate-700 block">🛡️ Ultra Care+ รวมสาขา</span>
                   <span className="text-[11px] text-slate-400">% เดิม ➔ ใหม่</span>
                 </div>
                 <div className="text-right">
-                  <span className="text-xs text-slate-600 block">{teamCareIphoneOld} ➔ {teamCareIphoneNew}</span>
-                  <span className="text-sm font-black text-indigo-700">{((teamCareIphoneOld / baseTeamIphone) * 100).toFixed(1)}% ➔ {teamCareIphoneNewPct.toFixed(1)}%</span>
+                  <span className="text-xs text-slate-600 block">{teamCareSmpOld} ➔ {teamCareSmpNew}</span>
+                  <span className="text-sm font-black text-indigo-700">{((teamCareSmpOld / baseTeamSmp) * 100).toFixed(1)}% ➔ {teamCareSmpNewPct.toFixed(1)}%</span>
                 </div>
               </div>
 
               {/* SIM True team */}
               <div className="bg-slate-50 p-3 rounded-2xl border border-slate-200/80 flex items-center justify-between">
                 <div>
-                  <span className="font-bold text-slate-700 block">📶 SIM รวมทั้งทีม</span>
+                  <span className="font-bold text-slate-700 block">📶 SIM True รวมสาขา</span>
                   <span className="text-[11px] text-slate-400">% เดิม ➔ ใหม่</span>
                 </div>
                 <div className="text-right">
                   <span className="text-xs text-slate-600 block">{teamSimOld} ➔ {teamSimNew}</span>
-                  <span className="text-sm font-black text-indigo-700">{((teamSimOld / baseTeamIphone) * 100).toFixed(1)}% ➔ {teamSimNewPct.toFixed(1)}%</span>
+                  <span className="text-sm font-black text-indigo-700">{((teamSimOld / baseTeamSmp) * 100).toFixed(1)}% ➔ {teamSimNewPct.toFixed(1)}%</span>
                 </div>
               </div>
 
               {/* UFUND team */}
               <div className="bg-slate-50 p-3 rounded-2xl border border-slate-200/80 flex items-center justify-between">
                 <div>
-                  <span className="font-bold text-slate-700 block">💳 UFUND รวมทั้งทีม</span>
+                  <span className="font-bold text-slate-700 block">💳 UFUND รวมสาขา</span>
                   <span className="text-[11px] text-slate-400">% เดิม ➔ ใหม่</span>
                 </div>
                 <div className="text-right">
                   <span className="text-xs text-slate-600 block">{teamUfundOld} ➔ {teamUfundNew}</span>
-                  <span className="text-sm font-black text-indigo-700">{((teamUfundOld / baseTeamIphone) * 100).toFixed(1)}% ➔ {teamUfundNewPct.toFixed(1)}%</span>
+                  <span className="text-sm font-black text-indigo-700">{((teamUfundOld / baseTeamSmp) * 100).toFixed(1)}% ➔ {teamUfundNewPct.toFixed(1)}%</span>
                 </div>
               </div>
 
               {/* Film team */}
               <div className="bg-slate-50 p-3 rounded-2xl border border-slate-200/80 flex items-center justify-between">
                 <div>
-                  <span className="font-bold text-slate-700 block">✨ ฟิล์ม iPhone รวมทั้งทีม</span>
+                  <span className="font-bold text-slate-700 block">✨ ฟิล์ม รวมสาขา</span>
                   <span className="text-[11px] text-slate-400">% เดิม ➔ ใหม่</span>
                 </div>
                 <div className="text-right">
                   <span className="text-xs text-slate-600 block">{teamFilmOld} ➔ {teamFilmNew}</span>
-                  <span className="text-sm font-black text-indigo-700">{((teamFilmOld / baseTeamIphone) * 100).toFixed(1)}% ➔ {teamFilmNewPct.toFixed(1)}%</span>
+                  <span className="text-sm font-black text-indigo-700">{((teamFilmOld / baseTeamSmp) * 100).toFixed(1)}% ➔ {teamFilmNewPct.toFixed(1)}%</span>
                 </div>
               </div>
             </div>
@@ -503,14 +530,14 @@ export const MscSimulatorTab: React.FC<MscSimulatorTabProps> = ({ data }) => {
         </div>
       </div>
 
-      {/* 3. Forecast Target Rate & Run Rate Calculator (Screenshot 7) */}
+      {/* 3. Forecast Target Rate & Run Rate Calculator */}
       <div className="bg-white rounded-3xl p-6 sm:p-7 border border-slate-200/90 shadow-xs space-y-5">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pb-3 border-b border-slate-100">
           <div>
             <div className="flex items-center gap-2">
               <span className="w-3 h-3 rounded-full bg-rose-500" />
               <h3 className="font-black text-base text-slate-900">
-                🎯 คาดการณ์ยอดขายตามระดับเป้าหมาย (% Forecast)
+                🎯 คาดการณ์ยอดขายตามระดับเป้าหมาย (% Forecast Target)
               </h3>
             </div>
             <div className="flex items-center gap-2 text-xs text-slate-500 mt-0.5">
@@ -520,7 +547,7 @@ export const MscSimulatorTab: React.FC<MscSimulatorTabProps> = ({ data }) => {
                   <button
                     key={s.staffId}
                     onClick={() => setSelectedStaffId(s.staffId)}
-                    className={`px-2 py-0.5 rounded-lg text-xs font-bold ${
+                    className={`px-2 py-0.5 rounded-lg text-xs font-bold cursor-pointer ${
                       selectedStaffId === s.staffId
                         ? 'bg-indigo-600 text-white'
                         : 'bg-slate-100 text-slate-700'
@@ -561,10 +588,10 @@ export const MscSimulatorTab: React.FC<MscSimulatorTabProps> = ({ data }) => {
             </div>
             <div>
               <div className="text-xs sm:text-sm font-extrabold text-slate-900">
-                เหลือที่วันจะหมดเดือน: <span className="text-amber-900 font-black">{daysRemaining} วัน</span> (สิ้นสุด 31 ต.ค. 2569)
+                เหลือเวลาทำงานอีก: <span className="text-amber-900 font-black">{daysRemaining} วัน</span> (สิ้นงวด 31 ต.ค. 2569)
               </div>
               <div className="text-[11px] text-slate-500">
-                วันนี้วันที่ 12 ต.ค. • คำนวณยอดขายที่ต้องทำจริงต่อวันการแข่งขัน 100%
+                ข้อมูลตัดรอบอัตโนมัติ: 12/10/2026 • จำลองระดับเป้าหมาย {targetLevelPct}% สำหรับ {staff.name}
               </div>
             </div>
           </div>
@@ -590,25 +617,10 @@ export const MscSimulatorTab: React.FC<MscSimulatorTabProps> = ({ data }) => {
             >
               รวมวันนี้ ({daysRemaining + 1} วัน)
             </button>
-            <div className="flex items-center bg-white border border-slate-200 rounded-xl px-2 py-1">
-              <button
-                onClick={() => setDaysRemaining((prev) => Math.max(1, prev - 1))}
-                className="text-xs font-bold px-1 text-slate-600 hover:text-slate-900"
-              >
-                -
-              </button>
-              <span className="text-xs font-black px-1 text-slate-900">{daysRemaining}</span>
-              <button
-                onClick={() => setDaysRemaining((prev) => prev + 1)}
-                className="text-xs font-bold px-1 text-slate-600 hover:text-slate-900"
-              >
-                +
-              </button>
-            </div>
           </div>
         </div>
 
-        {/* 3 Large KPI Summary Cards (Screenshot 7) */}
+        {/* 3 Large KPI Summary Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {/* Card 1 */}
           <div className="bg-slate-50/80 rounded-2xl p-4.5 border border-slate-200/80 space-y-1">
@@ -617,7 +629,7 @@ export const MscSimulatorTab: React.FC<MscSimulatorTabProps> = ({ data }) => {
               {staffTargetTotal.toLocaleString(undefined, { maximumFractionDigits: 0 })} ฿
             </div>
             <div className="text-[11px] text-slate-500">
-              ยอดขายจริงปัจจุบัน: {staffActualTotal.toLocaleString()} ฿
+              ยอดขายจริงปัจจุบัน ({staff.name}): {staffActualTotal.toLocaleString()} ฿
             </div>
           </div>
 
@@ -652,7 +664,7 @@ export const MscSimulatorTab: React.FC<MscSimulatorTabProps> = ({ data }) => {
           </div>
         </div>
 
-        {/* Breakdown table per product (Screenshot 7 bottom) */}
+        {/* Breakdown table per product */}
         <div className="overflow-x-auto pt-2">
           <table className="w-full text-left text-xs">
             <thead>
@@ -666,10 +678,10 @@ export const MscSimulatorTab: React.FC<MscSimulatorTabProps> = ({ data }) => {
             </thead>
             <tbody className="divide-y divide-slate-100">
               {[
-                { label: '📱 iPhone', target: staff.iphone.targetRevenue * (targetLevelPct / 100), actual: staff.iphone.actualRevenue },
-                { label: '📱 iPad', target: staff.ipad.targetRevenue * (targetLevelPct / 100), actual: staff.ipad.actualRevenue },
-                { label: '💻 Mac', target: staff.mac.targetRevenue * (targetLevelPct / 100), actual: staff.mac.actualRevenue },
-                { label: '⌚ Apple Watch', target: staff.appleWatch.targetRevenue * (targetLevelPct / 100), actual: staff.appleWatch.actualRevenue },
+                { label: '📱 Smartphone', target: 2027815 * (targetLevelPct / 100), actual: staff.iphone.actualRevenue },
+                { label: '💻 Notebook (NB)', target: 466009 * (targetLevelPct / 100), actual: staff.mac.actualRevenue },
+                { label: '💻 DIY', target: 14873 * (targetLevelPct / 100), actual: staff.ipad.actualRevenue },
+                { label: '🖥️ Desktop', target: 48890 * (targetLevelPct / 100), actual: staff.appleWatch.actualRevenue },
               ].map((row) => {
                 const needed = Math.max(0, row.target - row.actual);
                 const daily = effectiveDays > 0 ? needed / effectiveDays : 0;
@@ -690,7 +702,7 @@ export const MscSimulatorTab: React.FC<MscSimulatorTabProps> = ({ data }) => {
 
               {/* Total row */}
               <tr className="bg-slate-50 font-black border-t-2 border-slate-200">
-                <td className="py-3 px-3 text-indigo-900">🏆 รวมทุกสินค้า</td>
+                <td className="py-3 px-3 text-indigo-900">🏆 รวมทุกสินค้า ({staff.name})</td>
                 <td className="py-3 px-3 text-right text-indigo-900 font-black">
                   {staffTargetTotal.toLocaleString(undefined, { maximumFractionDigits: 0 })} ฿
                 </td>
