@@ -1,0 +1,6 @@
+{
+  "name": "Executive Sales Dashboard & Team Leaderboard",
+  "description": "แดชบอร์ดผู้บริหารและกระดานจัดอันดับทีมขายสาขา PIA (ยอดขายจริง 6.50M / เป้าหมาย 10.23M, KPI อัตราแนบ และบันทึกยอดขาย 31 วัน)",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
