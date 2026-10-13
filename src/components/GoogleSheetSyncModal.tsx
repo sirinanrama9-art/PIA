@@ -329,11 +329,13 @@ export const GoogleSheetSyncModal: React.FC<GoogleSheetSyncModalProps> = ({
           {/* TAB 1: PASTE LINK TO FETCH (PRIMARY REQUEST) */}
           {activeTab === 'link' && (
             <div className="space-y-5">
-              {/* Main URL Input Box */}
-              <div className="bg-slate-50 p-5 rounded-3xl border border-slate-200 space-y-4">
+              {/* Main URL Input Box - Decorated Emerald Gradient */}
+              <div className="bg-gradient-to-br from-emerald-50/80 via-teal-50/30 to-white p-4 sm:p-5 rounded-2xl border border-emerald-200/90 shadow-2xs space-y-3.5">
                 <div className="flex items-center justify-between">
                   <label className="text-xs font-black text-slate-900 flex items-center gap-2">
-                    <Link2 className="w-4 h-4 text-emerald-600" />
+                    <span className="w-6 h-6 rounded-lg bg-emerald-100 text-emerald-700 flex items-center justify-center border border-emerald-200 shadow-2xs">
+                      <Link2 className="w-3.5 h-3.5" />
+                    </span>
                     <span>ช่องวางลิงก์ Google Sheet (URL Link):</span>
                   </label>
 

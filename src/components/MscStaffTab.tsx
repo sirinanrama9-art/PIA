@@ -13,7 +13,13 @@ import {
   TrendingUp, 
   ChevronRight,
   Flame,
-  Award
+  Award,
+  Sparkles,
+  Wifi,
+  CreditCard,
+  HardDrive,
+  Watch,
+  ShieldCheck
 } from 'lucide-react';
 
 interface MscStaffTabProps {
@@ -41,6 +47,9 @@ export const MscStaffTab: React.FC<MscStaffTabProps> = ({ data }) => {
     deficitRev: number;
     rank: number;
     rankLabel: string;
+    rankBg: string;
+    avatarGradient: string;
+    cardClass?: string;
     smpUnits: number;
     diyUnits: number;
     nbUnits: number;
@@ -64,6 +73,9 @@ export const MscStaffTab: React.FC<MscStaffTabProps> = ({ data }) => {
       deficitRev: 1542548,
       rank: 1,
       rankLabel: '🥇 อันดับ 1',
+      rankBg: 'bg-amber-100 text-amber-900 border-amber-300',
+      avatarGradient: 'from-amber-500 to-yellow-600',
+      cardClass: 'bg-gradient-to-b from-amber-50/70 via-white to-amber-50/20 border-2 border-amber-300 hover:border-amber-400 shadow-xs shadow-amber-500/10',
       smpUnits: 36,
       diyUnits: 2,
       nbUnits: 18,
@@ -87,6 +99,9 @@ export const MscStaffTab: React.FC<MscStaffTabProps> = ({ data }) => {
       deficitRev: 1788129,
       rank: 2,
       rankLabel: '🥈 อันดับ 2',
+      rankBg: 'bg-slate-100 text-slate-800 border-slate-300',
+      avatarGradient: 'from-blue-500 to-indigo-600',
+      cardClass: 'bg-gradient-to-b from-blue-50/70 via-white to-blue-50/20 border-2 border-blue-300 hover:border-blue-400 shadow-xs shadow-blue-500/10',
       smpUnits: 47,
       diyUnits: 2,
       nbUnits: 4,
@@ -110,6 +125,9 @@ export const MscStaffTab: React.FC<MscStaffTabProps> = ({ data }) => {
       deficitRev: 1851303,
       rank: 3,
       rankLabel: '🥉 อันดับ 3',
+      rankBg: 'bg-orange-100 text-orange-900 border-orange-300',
+      avatarGradient: 'from-purple-500 to-indigo-600',
+      cardClass: 'bg-gradient-to-b from-purple-50/70 via-white to-purple-50/20 border-2 border-purple-300 hover:border-purple-400 shadow-xs shadow-purple-500/10',
       smpUnits: 42,
       diyUnits: 2,
       nbUnits: 4,
@@ -133,6 +151,9 @@ export const MscStaffTab: React.FC<MscStaffTabProps> = ({ data }) => {
       deficitRev: 1922037,
       rank: 4,
       rankLabel: '🏅 อันดับ 4',
+      rankBg: 'bg-indigo-100 text-indigo-900 border-indigo-300',
+      avatarGradient: 'from-pink-500 to-rose-600',
+      cardClass: 'bg-gradient-to-b from-rose-50/70 via-white to-rose-50/20 border-2 border-rose-300 hover:border-rose-400 shadow-xs shadow-rose-500/10',
       smpUnits: 45,
       diyUnits: 1,
       nbUnits: 4,
@@ -152,17 +173,17 @@ export const MscStaffTab: React.FC<MscStaffTabProps> = ({ data }) => {
   };
 
   return (
-    <div className="space-y-6">
-      {/* 1. Header Filter Bar */}
-      <div className="bg-white rounded-2xl p-4 sm:p-5 border border-slate-200/90 shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+    <div className="space-y-4">
+      {/* 1. Header Filter Bar - Compact */}
+      <div className="bg-white rounded-2xl p-3 sm:p-4 border border-slate-200/90 shadow-2xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2.5">
         <div>
           <div className="flex items-center gap-2">
-            <User className="w-5 h-5 text-indigo-600" />
-            <h2 className="text-base sm:text-lg font-black text-slate-900 tracking-tight">
-              👤 ผลงานรายบุคคล (ตุลาคม 2569)
+            <span className="w-7 h-7 rounded-lg bg-indigo-50 border border-indigo-200 text-indigo-600 flex items-center justify-center text-sm shadow-2xs">👤</span>
+            <h2 className="text-sm sm:text-base font-black text-slate-900 tracking-tight">
+              ผลงานรายบุคคล (ตุลาคม 2569)
             </h2>
           </div>
-          <div className="text-xs text-slate-500 mt-0.5">
+          <div className="text-[11px] text-slate-500 mt-0.5">
             🎯 เกณฑ์เป้าหมาย: 🛡️ Ultra Care+ SMP (≥40%) | SIM ≥ 30% | UFUND ≥ 50% | ฟิล์ม ≥ 70% | SanDisk ≥ 50%
           </div>
         </div>
@@ -171,9 +192,9 @@ export const MscStaffTab: React.FC<MscStaffTabProps> = ({ data }) => {
         <div className="flex items-center gap-1.5 flex-wrap">
           <button
             onClick={() => setSelectedStaffFilter('all')}
-            className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+            className={`px-3 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer ${
               selectedStaffFilter === 'all'
-                ? 'bg-indigo-600 text-white shadow-xs'
+                ? 'bg-indigo-600 text-white shadow-2xs'
                 : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
             }`}
           >
@@ -181,14 +202,13 @@ export const MscStaffTab: React.FC<MscStaffTabProps> = ({ data }) => {
           </button>
 
           {data.staffList.map((s) => {
-            const info = staffStaticInfo[s.staffId];
             return (
               <button
                 key={s.staffId}
                 onClick={() => setSelectedStaffFilter(s.staffId)}
-                className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1 ${
+                className={`px-2.5 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-1 ${
                   selectedStaffFilter === s.staffId
-                    ? 'bg-indigo-600 text-white shadow-xs'
+                    ? 'bg-indigo-600 text-white shadow-2xs'
                     : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
                 }`}
               >
@@ -200,36 +220,38 @@ export const MscStaffTab: React.FC<MscStaffTabProps> = ({ data }) => {
         </div>
       </div>
 
-      {/* 2. Staff Cards Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+      {/* 2. Staff Cards Grid - Compact Sizes & Polished Card & Icon Designs */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
         {filteredStaff.map((staff) => {
           const info = staffStaticInfo[staff.staffId] || staffStaticInfo['35350'];
 
           return (
             <div
               key={staff.staffId}
-              className="bg-white rounded-3xl p-5 sm:p-6 border border-slate-200/90 shadow-sm flex flex-col justify-between space-y-5 hover:border-indigo-200 transition-colors"
+              className={`${info.cardClass || 'bg-white border-slate-200/90'} rounded-2xl p-3.5 sm:p-4 border shadow-2xs flex flex-col justify-between space-y-3 transition-all`}
             >
               {/* Staff Title Header */}
               <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="w-11 h-11 rounded-2xl bg-indigo-50 border border-indigo-200 text-indigo-700 flex items-center justify-center font-black text-lg shadow-2xs">
+                <div className="flex items-center gap-2.5">
+                  <div className={`w-9 h-9 rounded-xl bg-gradient-to-br ${info.avatarGradient} text-white flex items-center justify-center font-black text-sm shadow-xs`}>
                     {staff.avatarLetter}
                   </div>
                   <div>
-                    <div className="flex items-center gap-2">
-                      <h3 className="font-black text-base text-slate-900">{staff.name}</h3>
-                      <span className="text-xs font-bold px-2 py-0.5 rounded-lg bg-slate-100 text-slate-600">
+                    <div className="flex items-center gap-1.5">
+                      <h3 className="font-black text-sm sm:text-base text-slate-900">{staff.name}</h3>
+                      <span className="text-[10px] font-bold px-1.5 py-0.2 rounded bg-slate-100 text-slate-600 border border-slate-200">
                         PIA: {staff.staffId}
                       </span>
                     </div>
-                    <span className="text-xs text-indigo-700 font-extrabold">{info.rankLabel}</span>
+                    <span className={`text-[10px] font-black px-1.5 py-0.2 rounded border inline-block mt-0.5 ${info.rankBg}`}>
+                      {info.rankLabel}
+                    </span>
                   </div>
                 </div>
 
                 <div className="text-right">
-                  <div className="text-xs text-slate-400 font-medium">ยอดขายจริง</div>
-                  <div className="text-base font-black text-slate-900">
+                  <div className="text-[10px] text-slate-400 font-medium">ยอดขายจริง</div>
+                  <div className="text-sm sm:text-base font-black text-slate-900">
                     {info.actualRev.toLocaleString()} ฿
                   </div>
                   <div className="text-[10px] text-rose-500 font-bold">
@@ -239,12 +261,12 @@ export const MscStaffTab: React.FC<MscStaffTabProps> = ({ data }) => {
               </div>
 
               {/* Progress Bar towards Target */}
-              <div className="space-y-1.5 bg-slate-50/70 p-3.5 rounded-2xl border border-slate-200/60">
-                <div className="flex justify-between items-baseline text-xs">
+              <div className="space-y-1 bg-slate-50/80 p-2.5 rounded-xl border border-slate-200/60">
+                <div className="flex justify-between items-baseline text-[11px]">
                   <span className="font-bold text-slate-700">เป้าหมาย Q4 (2,557,587 ฿)</span>
                   <span className="font-black text-indigo-700">{info.achievePct}%</span>
                 </div>
-                <div className="w-full bg-slate-200 h-2 rounded-full overflow-hidden">
+                <div className="w-full bg-slate-200 h-1.5 rounded-full overflow-hidden">
                   <div
                     className="bg-indigo-600 h-full rounded-full transition-all duration-500"
                     style={{ width: `${Math.min(info.achievePct, 100)}%` }}
@@ -254,93 +276,102 @@ export const MscStaffTab: React.FC<MscStaffTabProps> = ({ data }) => {
 
               {/* Product Device Units Count */}
               <div>
-                <div className="flex justify-between items-center text-xs mb-2">
+                <div className="flex justify-between items-center text-[11px] mb-1.5">
                   <span className="font-bold text-slate-700">📦 ยอดขายเครื่องแยกรายหมวด</span>
-                  <span className="text-[11px] font-extrabold text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded-md border border-indigo-100">
+                  <span className="text-[10px] font-extrabold text-indigo-700 bg-indigo-50 px-1.5 py-0.2 rounded border border-indigo-100">
                     รวม {info.totalUnits} เครื่อง
                   </span>
                 </div>
 
-                <div className="grid grid-cols-4 gap-2 text-center text-xs">
-                  <div className="bg-slate-50 p-2.5 rounded-xl border border-slate-200">
-                    <div className="text-[10px] text-slate-500 font-semibold flex items-center justify-center gap-1">
+                <div className="grid grid-cols-4 gap-1.5 text-center text-xs">
+                  <div className="bg-sky-50/60 p-1.5 rounded-lg border border-sky-200/70">
+                    <div className="text-[9px] text-sky-800 font-semibold flex items-center justify-center gap-0.5">
                       <span>📱</span>
-                      <span>Smartphone</span>
+                      <span className="truncate">SMP</span>
                     </div>
-                    <div className="font-black text-slate-900 text-sm mt-0.5">{info.smpUnits} เครื่อง</div>
+                    <div className="font-black text-slate-900 text-xs mt-0.5">{info.smpUnits} เครื่อง</div>
                   </div>
 
-                  <div className="bg-slate-50 p-2.5 rounded-xl border border-slate-200">
-                    <div className="text-[10px] text-slate-500 font-semibold flex items-center justify-center gap-1">
+                  <div className="bg-emerald-50/60 p-1.5 rounded-lg border border-emerald-200/70">
+                    <div className="text-[9px] text-emerald-800 font-semibold flex items-center justify-center gap-0.5">
                       <span>💻</span>
-                      <span>DIY</span>
+                      <span className="truncate">DIY</span>
                     </div>
-                    <div className="font-black text-slate-900 text-sm mt-0.5">{info.diyUnits} เครื่อง</div>
+                    <div className="font-black text-slate-900 text-xs mt-0.5">{info.diyUnits} เครื่อง</div>
                   </div>
 
-                  <div className="bg-slate-50 p-2.5 rounded-xl border border-slate-200">
-                    <div className="text-[10px] text-slate-500 font-semibold flex items-center justify-center gap-1">
+                  <div className="bg-indigo-50/60 p-1.5 rounded-lg border border-indigo-200/70">
+                    <div className="text-[9px] text-indigo-800 font-semibold flex items-center justify-center gap-0.5">
                       <span>💻</span>
-                      <span>NB (Notebook)</span>
+                      <span className="truncate">NB</span>
                     </div>
-                    <div className="font-black text-slate-900 text-sm mt-0.5">{info.nbUnits} เครื่อง</div>
+                    <div className="font-black text-slate-900 text-xs mt-0.5">{info.nbUnits} เครื่อง</div>
                   </div>
 
-                  <div className="bg-slate-50 p-2.5 rounded-xl border border-slate-200">
-                    <div className="text-[10px] text-slate-500 font-semibold flex items-center justify-center gap-1">
+                  <div className="bg-amber-50/60 p-1.5 rounded-lg border border-amber-200/70">
+                    <div className="text-[9px] text-amber-800 font-semibold flex items-center justify-center gap-0.5">
                       <span>🖥️</span>
-                      <span>Desktop</span>
+                      <span className="truncate">Desk</span>
                     </div>
-                    <div className="font-black text-slate-900 text-sm mt-0.5">{info.desktopUnits} เครื่อง</div>
+                    <div className="font-black text-slate-900 text-xs mt-0.5">{info.desktopUnits} เครื่อง</div>
                   </div>
                 </div>
               </div>
 
-              {/* 8 Attach Rates Badges Grid */}
-              <div className="pt-2 border-t border-slate-100 space-y-2">
-                <span className="text-[11px] font-extrabold text-slate-600 block">
+              {/* 8 Attach Rates Badges Grid - Compact with Styled Icons */}
+              <div className="pt-1.5 border-t border-slate-100 space-y-1.5">
+                <span className="text-[10px] font-extrabold text-slate-600 block">
                   🛡️ อัตราแนบบริการ (Key Attach Rates)
                 </span>
 
-                <div className="grid grid-cols-2 gap-2 text-xs">
+                <div className="grid grid-cols-2 gap-1.5 text-xs">
                   {/* Ultra Care+ SMP */}
-                  <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-200/80 flex items-center justify-between">
+                  <div className="p-1.5 rounded-lg bg-gradient-to-r from-indigo-50/80 to-blue-50/30 border border-indigo-200/80 flex items-center justify-between">
                     <div>
-                      <div className="text-[10px] font-bold text-slate-600">🛡️ Ultra Care+ SMP</div>
-                      <div className="text-[10px] text-slate-400">เป้า ≥ 40%</div>
+                      <div className="text-[9px] font-bold text-indigo-950 flex items-center gap-1">
+                        <span className="w-3.5 h-3.5 rounded bg-indigo-100 text-indigo-700 flex items-center justify-center text-[9px]">🛡️</span>
+                        <span>Ultra Care+</span>
+                      </div>
+                      <div className="text-[8px] text-indigo-400">เป้า ≥ 40%</div>
                     </div>
                     <div className="text-right">
-                      <div className="font-black text-slate-900">{info.attach.utcCare.rate.toFixed(1)}%</div>
-                      <span className="text-[9px] font-bold text-rose-600 bg-rose-50 px-1.5 py-0.2 rounded">
+                      <div className="font-black text-slate-900 text-xs">{info.attach.utcCare.rate.toFixed(1)}%</div>
+                      <span className="text-[8px] font-bold text-rose-600 bg-rose-50 px-1 py-0.2 rounded border border-rose-100">
                         {info.attach.utcCare.status}
                       </span>
                     </div>
                   </div>
 
                   {/* Social Care+ */}
-                  <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-200/80 flex items-center justify-between">
+                  <div className="p-1.5 rounded-lg bg-gradient-to-r from-rose-50/80 to-pink-50/30 border border-rose-200/80 flex items-center justify-between">
                     <div>
-                      <div className="text-[10px] font-bold text-slate-600">🛡️ Social Care+</div>
-                      <div className="text-[10px] text-slate-400">เป้า ≥ 30%</div>
+                      <div className="text-[9px] font-bold text-rose-950 flex items-center gap-1">
+                        <span className="w-3.5 h-3.5 rounded bg-rose-100 text-rose-700 flex items-center justify-center text-[9px]">🛡️</span>
+                        <span>Social Care+</span>
+                      </div>
+                      <div className="text-[8px] text-rose-400">เป้า ≥ 30%</div>
                     </div>
                     <div className="text-right">
-                      <div className="font-black text-slate-900">{info.attach.socialCare.rate.toFixed(1)}%</div>
-                      <span className="text-[9px] font-bold text-rose-600 bg-rose-50 px-1.5 py-0.2 rounded">
+                      <div className="font-black text-slate-900 text-xs">{info.attach.socialCare.rate.toFixed(1)}%</div>
+                      <span className="text-[8px] font-bold text-rose-600 bg-rose-50 px-1 py-0.2 rounded border border-rose-100">
                         {info.attach.socialCare.status}
                       </span>
                     </div>
                   </div>
 
                   {/* TI Care+ */}
-                  <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-200/80 flex items-center justify-between">
+                  <div className="p-1.5 rounded-lg bg-gradient-to-r from-blue-50/80 to-indigo-50/30 border border-blue-200/80 flex items-center justify-between">
                     <div>
-                      <div className="text-[10px] font-bold text-slate-600">💻 TI Care+</div>
-                      <div className="text-[10px] text-slate-400">เป้า ≥ 30%</div>
+                      <div className="text-[9px] font-bold text-blue-950 flex items-center gap-1">
+                        <span className="w-3.5 h-3.5 rounded bg-blue-100 text-blue-700 flex items-center justify-center text-[9px]">💻</span>
+                        <span>TI Care+</span>
+                      </div>
+                      <div className="text-[8px] text-blue-400">เป้า ≥ 30%</div>
                     </div>
                     <div className="text-right">
-                      <div className="font-black text-slate-900">{info.attach.tiCare.rate.toFixed(1)}%</div>
-                      <span className={`text-[9px] font-bold px-1.5 py-0.2 rounded ${
-                        info.attach.tiCare.near ? 'text-amber-800 bg-amber-100' : 'text-rose-600 bg-rose-50'
+                      <div className="font-black text-slate-900 text-xs">{info.attach.tiCare.rate.toFixed(1)}%</div>
+                      <span className={`text-[8px] font-bold px-1 py-0.2 rounded border ${
+                        info.attach.tiCare.near ? 'text-amber-800 bg-amber-50 border-amber-200' : 'text-rose-600 bg-rose-50 border-rose-100'
                       }`}>
                         {info.attach.tiCare.status}
                       </span>
@@ -348,70 +379,85 @@ export const MscStaffTab: React.FC<MscStaffTabProps> = ({ data }) => {
                   </div>
 
                   {/* UTC+ For Gadget */}
-                  <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-200/80 flex items-center justify-between">
+                  <div className="p-1.5 rounded-lg bg-gradient-to-r from-teal-50/80 to-emerald-50/30 border border-teal-200/80 flex items-center justify-between">
                     <div>
-                      <div className="text-[10px] font-bold text-slate-600">⌚ UTC+ Gadget</div>
-                      <div className="text-[10px] text-slate-400">เป้า ≥ 20%</div>
+                      <div className="text-[9px] font-bold text-teal-950 flex items-center gap-1">
+                        <span className="w-3.5 h-3.5 rounded bg-teal-100 text-teal-700 flex items-center justify-center text-[9px]">⌚</span>
+                        <span>UTC+ Gadget</span>
+                      </div>
+                      <div className="text-[8px] text-teal-500">เป้า ≥ 20%</div>
                     </div>
                     <div className="text-right">
-                      <div className="font-black text-slate-900">{info.attach.utcGadget.rate.toFixed(1)}%</div>
-                      <span className="text-[9px] font-bold text-rose-600 bg-rose-50 px-1.5 py-0.2 rounded">
+                      <div className="font-black text-slate-900 text-xs">{info.attach.utcGadget.rate.toFixed(1)}%</div>
+                      <span className="text-[8px] font-bold text-rose-600 bg-rose-50 px-1 py-0.2 rounded border border-rose-100">
                         {info.attach.utcGadget.status}
                       </span>
                     </div>
                   </div>
 
                   {/* SIM True */}
-                  <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-200/80 flex items-center justify-between">
+                  <div className="p-1.5 rounded-lg bg-gradient-to-r from-sky-50/80 to-cyan-50/30 border border-sky-200/80 flex items-center justify-between">
                     <div>
-                      <div className="text-[10px] font-bold text-slate-600">📶 SIM True</div>
-                      <div className="text-[10px] text-slate-400">เป้า ≥ 30%</div>
+                      <div className="text-[9px] font-bold text-sky-950 flex items-center gap-1">
+                        <span className="w-3.5 h-3.5 rounded bg-sky-100 text-sky-700 flex items-center justify-center text-[9px]">📶</span>
+                        <span>SIM True</span>
+                      </div>
+                      <div className="text-[8px] text-sky-400">เป้า ≥ 30%</div>
                     </div>
                     <div className="text-right">
-                      <div className="font-black text-slate-900">{info.attach.sim.rate.toFixed(1)}%</div>
-                      <span className="text-[9px] font-bold text-rose-600 bg-rose-50 px-1.5 py-0.2 rounded">
+                      <div className="font-black text-slate-900 text-xs">{info.attach.sim.rate.toFixed(1)}%</div>
+                      <span className="text-[8px] font-bold text-rose-600 bg-rose-50 px-1 py-0.2 rounded border border-rose-100">
                         {info.attach.sim.status}
                       </span>
                     </div>
                   </div>
 
                   {/* UFUND APPIN */}
-                  <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-200/80 flex items-center justify-between">
+                  <div className="p-1.5 rounded-lg bg-gradient-to-r from-purple-50/80 to-violet-50/30 border border-purple-200/80 flex items-center justify-between">
                     <div>
-                      <div className="text-[10px] font-bold text-slate-600">💳 UFUND APPIN</div>
-                      <div className="text-[10px] text-slate-400">เป้า ≥ 50%</div>
+                      <div className="text-[9px] font-bold text-purple-950 flex items-center gap-1">
+                        <span className="w-3.5 h-3.5 rounded bg-purple-100 text-purple-700 flex items-center justify-center text-[9px]">💳</span>
+                        <span>UFUND APPIN</span>
+                      </div>
+                      <div className="text-[8px] text-purple-400">เป้า ≥ 50%</div>
                     </div>
                     <div className="text-right">
-                      <div className="font-black text-slate-900">{info.attach.ufund.rate.toFixed(1)}%</div>
-                      <span className="text-[9px] font-bold text-rose-600 bg-rose-50 px-1.5 py-0.2 rounded">
+                      <div className="font-black text-slate-900 text-xs">{info.attach.ufund.rate.toFixed(1)}%</div>
+                      <span className="text-[8px] font-bold text-rose-600 bg-rose-50 px-1 py-0.2 rounded border border-rose-100">
                         {info.attach.ufund.status}
                       </span>
                     </div>
                   </div>
 
                   {/* SanDisk */}
-                  <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-200/80 flex items-center justify-between">
+                  <div className="p-1.5 rounded-lg bg-gradient-to-r from-slate-100/80 to-slate-50/60 border border-slate-300/80 flex items-center justify-between">
                     <div>
-                      <div className="text-[10px] font-bold text-slate-600">💾 SanDisk</div>
-                      <div className="text-[10px] text-slate-400">เป้า ≥ 50%</div>
+                      <div className="text-[9px] font-bold text-slate-800 flex items-center gap-1">
+                        <span className="w-3.5 h-3.5 rounded bg-slate-200 text-slate-800 flex items-center justify-center text-[9px]">💾</span>
+                        <span>SanDisk</span>
+                      </div>
+                      <div className="text-[8px] text-slate-400">เป้า ≥ 50%</div>
                     </div>
                     <div className="text-right">
-                      <div className="font-black text-slate-900">{info.attach.sandisk.rate.toFixed(1)}%</div>
-                      <span className="text-[9px] font-bold text-rose-600 bg-rose-50 px-1.5 py-0.2 rounded">
+                      <div className="font-black text-slate-900 text-xs">{info.attach.sandisk.rate.toFixed(1)}%</div>
+                      <span className="text-[8px] font-bold text-rose-600 bg-rose-50 px-1 py-0.2 rounded border border-rose-100">
                         {info.attach.sandisk.status}
                       </span>
                     </div>
                   </div>
 
                   {/* Film SMP */}
-                  <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-200/80 flex items-center justify-between">
+                  <div className="p-1.5 rounded-lg bg-gradient-to-r from-amber-50/80 to-orange-50/30 border border-amber-200/80 flex items-center justify-between">
                     <div>
-                      <div className="text-[10px] font-bold text-slate-600">✨ ฟิล์ม SMP</div>
-                      <div className="text-[10px] text-slate-400">เป้า ≥ 70%</div>
+                      <div className="text-[9px] font-bold text-amber-950 flex items-center gap-1">
+                        <span className="w-3.5 h-3.5 rounded bg-amber-100 text-amber-700 flex items-center justify-center text-[9px]">✨</span>
+                        <span>ฟิล์ม SMP</span>
+                      </div>
+                      <div className="text-[8px] text-amber-500">เป้า ≥ 70%</div>
                     </div>
                     <div className="text-right">
-                      <div className="font-black text-slate-900">{info.attach.film.rate.toFixed(1)}%</div>
-                      <span className="text-[9px] font-bold text-rose-600 bg-rose-50 px-1.5 py-0.2 rounded">
+                      <div className="font-black text-slate-900 text-xs">{info.attach.film.rate.toFixed(1)}%</div>
+                      <span className="text-[8px] font-bold text-rose-600 bg-rose-50 px-1 py-0.2 rounded border border-rose-100">
                         {info.attach.film.status}
                       </span>
                     </div>
@@ -423,17 +469,17 @@ export const MscStaffTab: React.FC<MscStaffTabProps> = ({ data }) => {
         })}
       </div>
 
-      {/* 3. Sales Target Tracking Section (🎯 ติดตามเป้าหมายยอดขายรายบุคคล) */}
-      <div className="bg-white rounded-3xl p-6 sm:p-7 border border-slate-200/90 shadow-xs space-y-5">
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pb-3 border-b border-slate-100">
+      {/* 3. Sales Target Tracking Section (🎯 ติดตามเป้าหมายยอดขายรายบุคคล) - Compact */}
+      <div className="bg-white rounded-2xl p-4 sm:p-5 border border-slate-200/90 shadow-2xs space-y-3.5">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2.5 pb-2.5 border-b border-slate-100">
           <div>
             <div className="flex items-center gap-2">
-              <span className="text-xl">🎯</span>
-              <h3 className="text-base sm:text-lg font-black text-slate-900 tracking-tight">
+              <span className="w-7 h-7 rounded-lg bg-rose-50 border border-rose-200 text-rose-600 flex items-center justify-center text-sm shadow-2xs">🎯</span>
+              <h3 className="text-sm sm:text-base font-black text-slate-900 tracking-tight">
                 ติดตามเป้าหมายยอดขายรายบุคคล (Sales Target Tracking)
               </h3>
             </div>
-            <p className="text-xs text-slate-500 mt-0.5">
+            <p className="text-[11px] text-slate-500 mt-0.5">
               👤 พนักงาน: <strong>{trackingStaff.name} (PIA: {trackingStaff.staffId})</strong> | เกณฑ์เป้าหมายยอดขายรายบุคคล Q4
             </p>
           </div>
@@ -441,12 +487,12 @@ export const MscStaffTab: React.FC<MscStaffTabProps> = ({ data }) => {
           {/* Controls: Select Staff & Target Multiplier (100% vs 120%) */}
           <div className="flex items-center gap-2 flex-wrap self-end sm:self-auto">
             {/* Select Staff */}
-            <div className="flex items-center gap-1 bg-slate-100 p-1 rounded-xl">
+            <div className="flex items-center gap-1 bg-slate-100 p-0.5 rounded-lg">
               {data.staffList.map((s) => (
                 <button
                   key={s.staffId}
                   onClick={() => setTrackingStaffId(s.staffId)}
-                  className={`px-2.5 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                  className={`px-2.5 py-1 rounded-md text-xs font-bold transition-all cursor-pointer ${
                     trackingStaffId === s.staffId
                       ? 'bg-white text-indigo-700 shadow-2xs'
                       : 'text-slate-600 hover:text-slate-900'
@@ -458,10 +504,10 @@ export const MscStaffTab: React.FC<MscStaffTabProps> = ({ data }) => {
             </div>
 
             {/* Target Multiplier 100% vs 120% */}
-            <div className="flex items-center gap-1 bg-slate-100 p-1 rounded-xl">
+            <div className="flex items-center gap-1 bg-slate-100 p-0.5 rounded-lg">
               <button
                 onClick={() => setTargetMultiplier(100)}
-                className={`px-2.5 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                className={`px-2.5 py-1 rounded-md text-xs font-bold transition-all cursor-pointer ${
                   targetMultiplier === 100
                     ? 'bg-indigo-600 text-white shadow-2xs'
                     : 'text-slate-600 hover:text-slate-900'
@@ -471,7 +517,7 @@ export const MscStaffTab: React.FC<MscStaffTabProps> = ({ data }) => {
               </button>
               <button
                 onClick={() => setTargetMultiplier(120)}
-                className={`px-2.5 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                className={`px-2.5 py-1 rounded-md text-xs font-bold transition-all cursor-pointer ${
                   targetMultiplier === 120
                     ? 'bg-indigo-600 text-white shadow-2xs'
                     : 'text-slate-600 hover:text-slate-900'
@@ -483,18 +529,18 @@ export const MscStaffTab: React.FC<MscStaffTabProps> = ({ data }) => {
           </div>
         </div>
 
-        {/* Detailed Target Tracking Table for Selected Staff */}
-        <div className="overflow-x-auto rounded-2xl border border-slate-200">
+        {/* Detailed Target Tracking Table for Selected Staff - Compact */}
+        <div className="overflow-x-auto rounded-xl border border-slate-200">
           <table className="w-full text-left text-xs border-collapse">
             <thead>
-              <tr className="border-b border-slate-200 bg-slate-100 text-slate-700 font-bold">
-                <th className="py-2.5 px-3">สินค้า / บริการ</th>
-                <th className="py-2.5 px-3 text-right">เป้าหมาย (บ.) ({targetMultiplier}%)</th>
-                <th className="py-2.5 px-3 text-right">ยอดขายจริง (บ.)</th>
-                <th className="py-2.5 px-3 text-right">% บรรลุ</th>
-                <th className="py-2.5 px-3 text-right">ยอดที่ยังขาด (บ.)</th>
-                <th className="py-2.5 px-3 text-right">⚡ ขายเฉลี่ยต่อวัน (19 วัน)</th>
-                <th className="py-2.5 px-3 text-center">สถานะ</th>
+              <tr className="border-b border-slate-200 bg-slate-50 text-slate-700 font-bold">
+                <th className="py-2 px-2.5">สินค้า / บริการ</th>
+                <th className="py-2 px-2.5 text-right">เป้าหมาย (บ.) ({targetMultiplier}%)</th>
+                <th className="py-2 px-2.5 text-right">ยอดขายจริง (บ.)</th>
+                <th className="py-2 px-2.5 text-right">% บรรลุ</th>
+                <th className="py-2 px-2.5 text-right">ยอดที่ยังขาด (บ.)</th>
+                <th className="py-2 px-2.5 text-right">⚡ ขายเฉลี่ยต่อวัน (19 วัน)</th>
+                <th className="py-2 px-2.5 text-center">สถานะ</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 bg-white">
@@ -542,24 +588,24 @@ export const MscStaffTab: React.FC<MscStaffTabProps> = ({ data }) => {
 
                       return (
                         <tr key={it.name} className="hover:bg-slate-50/70 transition-colors">
-                          <td className="py-2.5 px-3 font-semibold text-slate-800">{it.name}</td>
-                          <td className="py-2.5 px-3 text-right text-slate-700 font-medium">
+                          <td className="py-2 px-2.5 font-semibold text-slate-800">{it.name}</td>
+                          <td className="py-2 px-2.5 text-right text-slate-700 font-medium">
                             {targetVal.toLocaleString(undefined, { maximumFractionDigits: 0 })} ฿
                           </td>
-                          <td className="py-2.5 px-3 text-right font-black text-slate-900">
+                          <td className="py-2 px-2.5 text-right font-black text-slate-900">
                             {it.actual.toLocaleString()} ฿
                           </td>
-                          <td className="py-2.5 px-3 text-right font-black text-indigo-700">
+                          <td className="py-2 px-2.5 text-right font-black text-indigo-700">
                             {pct.toFixed(1)}%
                           </td>
-                          <td className="py-2.5 px-3 text-right font-bold text-rose-600">
+                          <td className="py-2 px-2.5 text-right font-bold text-rose-600">
                             {deficit > 0 ? `${deficit.toLocaleString(undefined, { maximumFractionDigits: 0 })} ฿` : '-'}
                           </td>
-                          <td className="py-2.5 px-3 text-right font-extrabold text-indigo-700">
+                          <td className="py-2 px-2.5 text-right font-extrabold text-indigo-700">
                             {daily > 0 ? `${daily.toLocaleString(undefined, { maximumFractionDigits: 0 })} ฿ / วัน` : '-'}
                           </td>
-                          <td className="py-2.5 px-3 text-center">
-                            <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
+                          <td className="py-2 px-2.5 text-center">
+                            <span className={`text-[9px] font-bold px-1.5 py-0.2 rounded-full ${
                               pct >= 100 ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800'
                             }`}>
                               {pct >= 100 ? '✓ บรรลุ' : '✕ ยังไม่บรรลุ'}
@@ -571,26 +617,26 @@ export const MscStaffTab: React.FC<MscStaffTabProps> = ({ data }) => {
 
                     {/* Summary row */}
                     <tr className="bg-slate-50 font-black border-t-2 border-slate-200">
-                      <td className="py-3 px-3 text-indigo-950 font-black">
+                      <td className="py-2.5 px-2.5 text-indigo-950 font-black">
                         🏆 รวมทุกสินค้า ({trackingStaff.name})
                       </td>
-                      <td className="py-3 px-3 text-right text-indigo-950 font-black">
+                      <td className="py-2.5 px-2.5 text-right text-indigo-950 font-black">
                         {totalTarget.toLocaleString(undefined, { maximumFractionDigits: 0 })} ฿
                       </td>
-                      <td className="py-3 px-3 text-right text-slate-900 font-black">
+                      <td className="py-2.5 px-2.5 text-right text-slate-900 font-black">
                         {totalActual.toLocaleString()} ฿
                       </td>
-                      <td className="py-3 px-3 text-right text-indigo-700 font-black">
+                      <td className="py-2.5 px-2.5 text-right text-indigo-700 font-black">
                         {totalAchieve.toFixed(1)}%
                       </td>
-                      <td className="py-3 px-3 text-right text-rose-600 font-black">
+                      <td className="py-2.5 px-2.5 text-right text-rose-600 font-black">
                         {totalDeficit.toLocaleString(undefined, { maximumFractionDigits: 0 })} ฿
                       </td>
-                      <td className="py-3 px-3 text-right text-indigo-700 font-black">
+                      <td className="py-2.5 px-2.5 text-right text-indigo-700 font-black">
                         {totalDaily.toLocaleString(undefined, { maximumFractionDigits: 0 })} ฿ / วัน
                       </td>
-                      <td className="py-3 px-3 text-center">
-                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-100 text-amber-800">
+                      <td className="py-2.5 px-2.5 text-center">
+                        <span className="text-[9px] font-bold px-1.5 py-0.2 rounded-full bg-amber-100 text-amber-800">
                           {totalAchieve >= 100 ? '✓ บรรลุเป้า' : '⚠️ เร่งทำยอด'}
                         </span>
                       </td>
@@ -602,7 +648,7 @@ export const MscStaffTab: React.FC<MscStaffTabProps> = ({ data }) => {
           </table>
         </div>
 
-        <div className="text-[11px] text-slate-500 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 pt-1">
+        <div className="text-[10px] text-slate-500 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-1.5 pt-0.5">
           <span>
             💡 <strong>เกณฑ์เป้าหมาย {targetMultiplier}%</strong>: คำนวณยอดที่ยังขาด = MAX(0, เป้าหมาย - ยอดขายจริง) • ขายเฉลี่ย = ขาด ÷ 19 วันที่เหลือ
           </span>

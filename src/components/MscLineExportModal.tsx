@@ -86,20 +86,20 @@ export const MscLineExportModal: React.FC<MscLineExportModalProps> = ({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-xs">
       <div className="bg-white rounded-3xl shadow-2xl max-w-lg w-full border border-slate-200 overflow-hidden flex flex-col max-h-[90vh]">
-        {/* Header */}
-        <div className="p-4 bg-emerald-700 text-white flex items-center justify-between">
+        {/* Header - Decorated Gradient */}
+        <div className="p-4 bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-700 text-white flex items-center justify-between shadow-xs">
           <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-xl bg-white/10 flex items-center justify-center text-emerald-200">
+            <div className="w-8 h-8 rounded-xl bg-white/20 flex items-center justify-center text-white border border-white/20 shadow-2xs">
               <MessageCircle className="w-4 h-4" />
             </div>
             <div>
               <h3 className="font-extrabold text-base">ส่งสรุปยอดเข้ากลุ่ม LINE (PIA Q4)</h3>
-              <p className="text-xs text-emerald-200">ฟอร์แมตสำเร็จรูปพร้อมส่งต่อทีมงานและผู้จัดการสาขา</p>
+              <p className="text-xs text-emerald-100">ฟอร์แมตสำเร็จรูปพร้อมส่งต่อทีมงานและผู้จัดการสาขา</p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="p-1 text-emerald-200 hover:text-white rounded-lg transition-colors cursor-pointer"
+            className="p-1 text-emerald-200 hover:text-white rounded-lg transition-colors cursor-pointer hover:bg-white/10"
           >
             <X className="w-5 h-5" />
           </button>
@@ -107,7 +107,7 @@ export const MscLineExportModal: React.FC<MscLineExportModalProps> = ({
 
         {/* Content */}
         <div className="p-5 space-y-4 overflow-y-auto custom-scrollbar">
-          <div className="bg-slate-950 text-slate-50 p-4.5 rounded-2xl font-sans text-xs whitespace-pre-wrap leading-relaxed border border-slate-800 shadow-inner select-all max-h-72 overflow-y-auto custom-scrollbar">
+          <div className="bg-slate-950 text-slate-50 p-4 rounded-2xl font-sans text-xs whitespace-pre-wrap leading-relaxed border border-emerald-900/60 shadow-inner select-all max-h-72 overflow-y-auto custom-scrollbar">
             {lineText}
           </div>
 

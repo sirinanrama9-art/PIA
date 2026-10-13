@@ -55,6 +55,9 @@ export interface CategorySummaryItem {
   statusNote: string;
   badge: string;
   color: string;
+  themeBorder?: string;
+  themeBg?: string;
+  iconBg?: string;
 }
 
 export interface BranchScorecard {

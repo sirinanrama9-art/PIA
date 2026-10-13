@@ -106,65 +106,65 @@ export const MscNavbar: React.FC<MscNavbarProps> = ({
           </div>
         </div>
 
-        {/* Navigation Tabs */}
-        <div className="flex items-center gap-2 overflow-x-auto pt-2 no-scrollbar border-t border-slate-100">
+        {/* Navigation Tabs - Compact & Beautiful */}
+        <div className="flex items-center gap-1.5 overflow-x-auto pt-2 no-scrollbar border-t border-slate-100">
           <button
             onClick={() => setActiveTab('overview')}
-            className={`inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap transition-all cursor-pointer ${
+            className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap transition-all cursor-pointer ${
               activeTab === 'overview'
                 ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/25 ring-2 ring-indigo-600/30'
                 : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
             }`}
           >
-            <Smartphone className="w-4 h-4" />
+            <Smartphone className={`w-3.5 h-3.5 ${activeTab === 'overview' ? 'text-white' : 'text-sky-600'}`} />
             <span>ภาพรวมสาขา & KPI</span>
           </button>
 
           <button
             onClick={() => setActiveTab('staff')}
-            className={`inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap transition-all cursor-pointer ${
+            className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap transition-all cursor-pointer ${
               activeTab === 'staff'
                 ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/25 ring-2 ring-indigo-600/30'
                 : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
             }`}
           >
-            <Users className="w-4 h-4" />
+            <Users className={`w-3.5 h-3.5 ${activeTab === 'staff' ? 'text-white' : 'text-purple-600'}`} />
             <span>ยอดขายรายบุคคล ({data.staffList.length})</span>
           </button>
 
           <button
             onClick={() => setActiveTab('simulator')}
-            className={`inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap transition-all cursor-pointer ${
+            className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap transition-all cursor-pointer ${
               activeTab === 'simulator'
                 ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/25 ring-2 ring-indigo-600/30'
                 : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
             }`}
           >
-            <Calculator className="w-4 h-4" />
+            <Calculator className={`w-3.5 h-3.5 ${activeTab === 'simulator' ? 'text-white' : 'text-amber-600'}`} />
             <span>จำลองยอด & แผนเร่งด่วน</span>
           </button>
 
           <button
             onClick={() => setActiveTab('daily')}
-            className={`inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap transition-all cursor-pointer ${
+            className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap transition-all cursor-pointer ${
               activeTab === 'daily'
                 ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/25 ring-2 ring-indigo-600/30'
                 : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
             }`}
           >
-            <TrendingUp className="w-4 h-4" />
+            <TrendingUp className={`w-3.5 h-3.5 ${activeTab === 'daily' ? 'text-white' : 'text-blue-600'}`} />
             <span>แนวโน้มรายวัน</span>
           </button>
 
           <button
             onClick={() => setActiveTab('master')}
-            className={`inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap transition-all cursor-pointer ${
+            className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap transition-all cursor-pointer ${
               activeTab === 'master'
                 ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/25 ring-2 ring-indigo-600/30'
                 : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
             }`}
           >
-            <Table className="w-4 h-4" />
+            <Table className={`w-3.5 h-3.5 ${activeTab === 'master' ? 'text-white' : 'text-emerald-600'}`} />
             <span>ตาราง 31 วันเต็ม</span>
           </button>
         </div>

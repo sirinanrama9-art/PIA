@@ -35,19 +35,19 @@ export const MasterDataTable: React.FC<MasterDataTableProps> = ({
   const storeSummary = calculateStoreSummary(staffList, records);
 
   return (
-    <div className="bg-white rounded-2xl border border-stone-200/90 shadow-2xs overflow-hidden space-y-4 p-5 sm:p-6">
+    <div className="bg-white rounded-2xl border border-slate-200/90 shadow-2xs overflow-hidden space-y-3.5 p-4 sm:p-5">
       {/* Controls Bar */}
-      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3">
+      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-2.5">
         <div>
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-xl bg-yellow-100 text-stone-900 flex items-center justify-center font-bold shadow-2xs border border-yellow-200">
-              <Table className="w-4 h-4 text-stone-700" />
+            <div className="w-7 h-7 rounded-lg bg-indigo-50 text-indigo-700 flex items-center justify-center font-bold shadow-2xs border border-indigo-200">
+              <Table className="w-4 h-4 text-indigo-600" />
             </div>
-            <h2 className="text-base font-black text-stone-900 tracking-tight">
+            <h2 className="text-sm sm:text-base font-black text-slate-900 tracking-tight">
               ตารางข้อมูลภาพรวมทั้งเดือน (31 วันเต็ม)
             </h2>
           </div>
-          <p className="text-xs text-stone-500 mt-1">
+          <p className="text-[11px] text-slate-500 mt-0.5">
             ตารางแสดงยอดขายแยกรายวันและรายบุคคล พร้อมอัตราแนบและยอดสรุป MTD ประจำสาขา
           </p>
         </div>
@@ -277,33 +277,33 @@ export const MasterDataTable: React.FC<MasterDataTableProps> = ({
               );
             })}
 
-            {/* Store Total Row */}
-            <tr className="bg-stone-100 font-black border-t-2 border-stone-200 sticky bottom-0 z-20">
-              <td className="p-3 sticky left-0 z-30 bg-stone-200/90 border-r border-stone-300 text-stone-950 whitespace-nowrap shadow-xs font-black">
-                รวมทั้งสาขา
+            {/* Store Total Row - Styled Dark Indigo Header */}
+            <tr className="bg-slate-900 text-white font-black border-t-2 border-indigo-500 sticky bottom-0 z-20 shadow-md">
+              <td className="p-3 sticky left-0 z-30 bg-slate-950 border-r border-slate-800 text-white whitespace-nowrap shadow-xs font-black">
+                🏆 รวมทั้งสาขา
               </td>
-              <td className="p-3 sticky left-[130px] z-30 bg-stone-200/90 border-r-2 border-stone-300 text-center whitespace-nowrap shadow-xs">
+              <td className="p-3 sticky left-[130px] z-30 bg-slate-950 border-r-2 border-slate-800 text-center whitespace-nowrap shadow-xs">
                 {sectionFilter === 'smp' ? (
                   <div>
-                    <span className="text-stone-950 text-sm font-black">
+                    <span className="text-emerald-400 text-sm font-black">
                       {storeSummary.totalSmp} เครื่อง
                     </span>
-                    <div className="text-[10px] text-stone-700 font-bold">
+                    <div className="text-[10px] text-indigo-200 font-bold">
                       UTC+ {storeSummary.utcSmpRate.toFixed(0)}% | ฟิล์ม {storeSummary.filmRate.toFixed(0)}%
                     </div>
                   </div>
                 ) : sectionFilter === 'nb' ? (
                   <div>
-                    <span className="text-stone-950 text-sm font-black">
+                    <span className="text-purple-300 text-sm font-black">
                       {storeSummary.totalNb} เครื่อง
                     </span>
-                    <div className="text-[10px] text-stone-700 font-bold">
+                    <div className="text-[10px] text-indigo-200 font-bold">
                       SanDisk {storeSummary.totalSandisk} ชิ้น
                     </div>
                   </div>
                 ) : (
                   <div>
-                    <span className="text-stone-950 text-sm font-black">
+                    <span className="text-white text-sm font-black">
                       {storeSummary.totalDevices} เครื่อง
                     </span>
                   </div>

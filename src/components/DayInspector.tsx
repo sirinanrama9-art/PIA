@@ -149,53 +149,71 @@ export const DayInspector: React.FC<DayInspectorProps> = ({
         </div>
       </div>
 
-      {/* Day Key Metrics Summary */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
-        <div className="bg-slate-50 rounded-xl p-3.5 border border-slate-200 shadow-2xs">
-          <span className="text-[11px] text-slate-600 block font-semibold">📱 สมาร์ทโฟน (SMP)</span>
-          <span className="text-2xl font-black text-slate-900 mt-1 block font-mono">{dayTotalSmp} <span className="text-xs font-normal text-slate-500">เครื่อง</span></span>
+      {/* Day Key Metrics Summary - Decorated with Colorful Thematic Gradients */}
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2.5">
+        <div className="bg-gradient-to-br from-sky-50/90 via-blue-50/25 to-white rounded-xl p-3 border border-sky-200/90 hover:border-sky-400 shadow-2xs space-y-0.5">
+          <span className="text-[10px] text-sky-900 block font-bold flex items-center gap-1">
+            <span>📱</span>
+            <span>สมาร์ทโฟน (SMP)</span>
+          </span>
+          <span className="text-xl font-black text-slate-900 block tracking-tight">{dayTotalSmp} <span className="text-[10px] font-normal text-slate-500">เครื่อง</span></span>
         </div>
 
-        <div className="bg-slate-50 rounded-xl p-3.5 border border-slate-200 shadow-2xs">
-          <span className="text-[11px] text-slate-600 block font-semibold">💻 โน้ตบุ๊ก (NB)</span>
-          <span className="text-2xl font-black text-slate-900 mt-1 block font-mono">{dayTotalNb} <span className="text-xs font-normal text-slate-500">เครื่อง</span></span>
+        <div className="bg-gradient-to-br from-indigo-50/90 via-purple-50/25 to-white rounded-xl p-3 border border-indigo-200/90 hover:border-indigo-400 shadow-2xs space-y-0.5">
+          <span className="text-[10px] text-indigo-900 block font-bold flex items-center gap-1">
+            <span>💻</span>
+            <span>โน้ตบุ๊ก (NB)</span>
+          </span>
+          <span className="text-xl font-black text-slate-900 block tracking-tight">{dayTotalNb} <span className="text-[10px] font-normal text-slate-500">เครื่อง</span></span>
         </div>
 
-        <div className="bg-slate-50 rounded-xl p-3.5 border border-slate-200 shadow-2xs">
-          <span className="text-[11px] text-slate-600 block font-semibold">🛡️ UTC+ (เป้า 40%)</span>
-          <div className="flex items-baseline gap-1.5 mt-1 font-mono">
-            <span className="text-2xl font-black text-slate-900">{dayUtcSmp}</span>
-            <span className={`text-xs font-bold ${dayUtcPct >= 40 ? 'text-emerald-700' : 'text-slate-600'}`}>
+        <div className="bg-gradient-to-br from-blue-50/90 via-indigo-50/25 to-white rounded-xl p-3 border border-blue-200/90 hover:border-blue-400 shadow-2xs space-y-0.5">
+          <span className="text-[10px] text-blue-900 block font-bold flex items-center gap-1">
+            <span>🛡️</span>
+            <span>UTC+ (เป้า 40%)</span>
+          </span>
+          <div className="flex items-baseline gap-1.5 tracking-tight">
+            <span className="text-xl font-black text-slate-900">{dayUtcSmp}</span>
+            <span className={`text-[10px] font-bold px-1 py-0.2 rounded ${dayUtcPct >= 40 ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-700'}`}>
               ({dayUtcPct.toFixed(0)}%)
             </span>
           </div>
         </div>
 
-        <div className="bg-slate-50 rounded-xl p-3.5 border border-slate-200 shadow-2xs">
-          <span className="text-[11px] text-slate-600 block font-semibold">💳 UFund (เป้า 50%)</span>
-          <div className="flex items-baseline gap-1.5 mt-1 font-mono">
-            <span className="text-2xl font-black text-slate-900">{dayUfund}</span>
-            <span className={`text-xs font-bold ${dayUfundPct >= 50 ? 'text-emerald-700' : 'text-slate-600'}`}>
+        <div className="bg-gradient-to-br from-purple-50/90 via-violet-50/25 to-white rounded-xl p-3 border border-purple-200/90 hover:border-purple-400 shadow-2xs space-y-0.5">
+          <span className="text-[10px] text-purple-900 block font-bold flex items-center gap-1">
+            <span>💳</span>
+            <span>UFund (เป้า 50%)</span>
+          </span>
+          <div className="flex items-baseline gap-1.5 tracking-tight">
+            <span className="text-xl font-black text-slate-900">{dayUfund}</span>
+            <span className={`text-[10px] font-bold px-1 py-0.2 rounded ${dayUfundPct >= 50 ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-700'}`}>
               ({dayUfundPct.toFixed(0)}%)
             </span>
           </div>
         </div>
 
-        <div className="bg-stone-50/60 rounded-xl p-3.5 border border-stone-200/80 shadow-2xs">
-          <span className="text-[11px] text-stone-600 block font-semibold">📶 SIM (เป้า 30%)</span>
-          <div className="flex items-baseline gap-1.5 mt-1">
-            <span className="text-2xl font-black text-stone-900">{daySim}</span>
-            <span className={`text-xs font-bold ${daySimPct >= 30 ? 'text-emerald-700' : 'text-stone-700'}`}>
+        <div className="bg-gradient-to-br from-cyan-50/90 via-sky-50/25 to-white rounded-xl p-3 border border-cyan-200/90 hover:border-cyan-400 shadow-2xs space-y-0.5">
+          <span className="text-[10px] text-cyan-900 block font-bold flex items-center gap-1">
+            <span>📶</span>
+            <span>SIM (เป้า 30%)</span>
+          </span>
+          <div className="flex items-baseline gap-1.5 tracking-tight">
+            <span className="text-xl font-black text-slate-900">{daySim}</span>
+            <span className={`text-[10px] font-bold px-1 py-0.2 rounded ${daySimPct >= 30 ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'}`}>
               ({daySimPct.toFixed(0)}%)
             </span>
           </div>
         </div>
 
-        <div className="bg-stone-50/60 rounded-xl p-3.5 border border-stone-200/80 shadow-2xs">
-          <span className="text-[11px] text-stone-600 block font-semibold">✨ ฟิล์ม (เป้า 70%)</span>
-          <div className="flex items-baseline gap-1.5 mt-1">
-            <span className="text-2xl font-black text-stone-900">{dayFilm}</span>
-            <span className={`text-xs font-bold ${dayFilmPct >= 70 ? 'text-emerald-700' : 'text-stone-700'}`}>
+        <div className="bg-gradient-to-br from-amber-50/90 via-orange-50/25 to-white rounded-xl p-3 border border-amber-200/90 hover:border-amber-400 shadow-2xs space-y-0.5">
+          <span className="text-[10px] text-amber-900 block font-bold flex items-center gap-1">
+            <span>✨</span>
+            <span>ฟิล์ม (เป้า 70%)</span>
+          </span>
+          <div className="flex items-baseline gap-1.5 tracking-tight">
+            <span className="text-xl font-black text-slate-900">{dayFilm}</span>
+            <span className={`text-[10px] font-bold px-1 py-0.2 rounded ${dayFilmPct >= 70 ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-700'}`}>
               ({dayFilmPct.toFixed(0)}%)
             </span>
           </div>
@@ -203,42 +221,42 @@ export const DayInspector: React.FC<DayInspectorProps> = ({
       </div>
 
       {/* Staff Cards for this day in soft styles */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 pt-2">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 pt-1">
         {staffDetails.map(({ staff, rec, totalDevices, utcPct, ufundPct, simPct, filmPct }) => {
           return (
             <div
               key={staff.id}
-              className="bg-white rounded-xl p-4.5 border border-stone-200/90 hover:border-yellow-200 hover:shadow-xs transition-all flex flex-col justify-between shadow-2xs group"
+              className="bg-white rounded-xl p-3.5 border border-slate-200/90 hover:border-indigo-300 hover:shadow-xs transition-all flex flex-col justify-between shadow-2xs group"
             >
               <div>
-                <div className="flex items-center justify-between border-b border-stone-100 pb-3">
-                  <div className="flex items-center gap-2.5">
-                    <div className="w-8 h-8 rounded-full bg-yellow-50 text-stone-850 font-black flex items-center justify-center text-xs shadow-2xs border border-yellow-200/80">
+                <div className="flex items-center justify-between border-b border-slate-100 pb-2.5">
+                  <div className="flex items-center gap-2">
+                    <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 text-white font-black flex items-center justify-center text-xs shadow-2xs">
                       {staff.name.slice(0, 1)}
                     </div>
                     <div>
-                      <h4 className="font-black text-sm text-stone-900">{staff.name}</h4>
-                      <span className="text-[10px] text-stone-400">รหัส {staff.id}</span>
+                      <h4 className="font-black text-xs sm:text-sm text-slate-900">{staff.name}</h4>
+                      <span className="text-[10px] text-slate-400 font-medium">รหัส {staff.id}</span>
                     </div>
                   </div>
 
                   <button
                     onClick={() => onEditDayStaff(staff.id, day)}
-                    className="p-1.5 text-stone-400 hover:text-stone-900 hover:bg-stone-50 rounded-lg transition-colors cursor-pointer"
+                    className="p-1.5 text-slate-400 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-colors cursor-pointer"
                     title={`แก้ไขยอดขายของ ${staff.name} วันที่ ${day}`}
                   >
                     <Edit3 className="w-3.5 h-3.5" />
                   </button>
                 </div>
 
-                <div className="mt-3 grid grid-cols-2 gap-2 text-center">
-                  <div className="bg-stone-50 p-2.5 rounded-lg border border-stone-100">
-                    <span className="text-[10px] text-stone-500 block font-medium">📱 SMP</span>
-                    <span className="text-xl font-black text-stone-900">{rec.smp.smpUnits}</span>
+                <div className="mt-2.5 grid grid-cols-2 gap-1.5 text-center">
+                  <div className="bg-sky-50/70 p-2 rounded-lg border border-sky-200/70">
+                    <span className="text-[9px] text-sky-800 block font-bold">📱 SMP</span>
+                    <span className="text-lg font-black text-slate-900">{rec.smp.smpUnits}</span>
                   </div>
-                  <div className="bg-stone-50 p-2.5 rounded-lg border border-stone-100">
-                    <span className="text-[10px] text-stone-500 block font-medium">💻 NB</span>
-                    <span className="text-xl font-black text-stone-900">{rec.nb.nbUnits}</span>
+                  <div className="bg-purple-50/70 p-2 rounded-lg border border-purple-200/70">
+                    <span className="text-[9px] text-purple-800 block font-bold">💻 NB</span>
+                    <span className="text-lg font-black text-slate-900">{rec.nb.nbUnits}</span>
                   </div>
                 </div>
 
